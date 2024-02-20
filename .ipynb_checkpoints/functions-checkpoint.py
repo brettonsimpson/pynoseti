@@ -282,7 +282,7 @@ def loading_complete():
 # In[ ]:
 
 
-def list_loading(list_input, counter):
+def list_loading(list_input):
     
     if counter == 0:
         print("Loading [....................]", end = "\r")
@@ -326,4 +326,6 @@ def list_loading(list_input, counter):
         print("Loading [|||||||||||||||||||.]", end = "\r")
     if counter == 20*len(list_input)/20-1:
         print("Loading Complete!", end = "\r")
+        
+    #counter += 1
 

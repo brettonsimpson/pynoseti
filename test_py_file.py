@@ -16,13 +16,13 @@ import time
 # In[2]:
 
 
-path = input('Please specify the path to your Wireshark capture file: ')
+#path = input('Please specify the location of your Wireshark capture file:')
 
 
 # In[3]:
 
 
-print(path)
+#print(path)
 
 
 # In[4]:
@@ -31,13 +31,16 @@ print(path)
 # Declares the list that will hold the hexadecimal data for each packet.
 
 ###########################################################
-#path = "C:/Users/brett/OneDrive/Code/Python/OIR Lab/Pause_onskyph0pe_ima0pe__20230426_040905.pcapng"
+path = "C:/Users/brett/OneDrive/Code/Python/OIR Lab/Pause_onskyph0pe_ima0pe__20230426_040905.pcapng"
 # Specifies the path to the file to be used in processing.
 # Don't forget to change when using a new file.
 ###########################################################
 
 packet_array = []
 # Declares the list that will hold the hexadecimal data for each packet.
+
+print("Reading selected file...")
+print("\n")
 
 with open(path, 'rb') as file:
     scanner = FileScanner(file)
@@ -88,6 +91,7 @@ from functions import convert_16bit_binary_to_integer
 from functions import concatenate_streams_and_convert_to_integer
 from functions import row_splitter
 from functions import get_image_source_ip
+from functions import list_loading
 
 file_packet_intensity_data = []
 image_list = []
@@ -95,15 +99,22 @@ object_list = []
 
 counter = 0
 
+print("Converting hexidecimal data to photon intensity...")
+print("\n")
+
 for packet in packet_array:
+    
     file_packet_intensity_data.append(row_splitter(packet))
     image_list.append('image'+str(counter))
     image_object = Image('image'+str(counter), counter, get_image_source_ip(packet), file_packet_intensity_data[counter])
     object_list.append(image_object)
+    
+    list_loading(packet_array, counter)
+    
     counter += 1
 
 
-# In[8]:
+# In[ ]:
 
 
 #object_list = []
@@ -116,7 +127,7 @@ for packet in packet_array:
 #    counter += 1
 
 
-# In[9]:
+# In[ ]:
 
 
 ip_list = []
@@ -124,9 +135,12 @@ ip_list = []
 for element in object_list:
     if element.source_ip not in ip_list:
         ip_list.append(element.source_ip)
+        
+print("\n")
+print("Retrieving source IP addresses...")
 
 
-# In[10]:
+# In[ ]:
 
 
 initial_list = []
@@ -159,4 +173,10 @@ for element in object_list:
         clear_output(wait=True)
 
         counter += 1
+
+
+# In[ ]:
+
+
+
 
