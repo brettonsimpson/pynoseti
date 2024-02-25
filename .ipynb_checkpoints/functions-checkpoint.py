@@ -243,6 +243,7 @@ def image_plotter(image):
     if len(image.data) > 0:
         plt.title(str(image.name))
         plt.imshow(image.data)
+        
         plt.show()
     #plt.close()
 
@@ -282,7 +283,7 @@ def loading_complete():
 # In[ ]:
 
 
-def list_loading(list_input):
+def list_loading(list_input, counter):
     
     if counter == 0:
         print("Loading [....................]", end = "\r")
@@ -326,6 +327,4 @@ def list_loading(list_input):
         print("Loading [|||||||||||||||||||.]", end = "\r")
     if counter == 20*len(list_input)/20-1:
         print("Loading Complete!", end = "\r")
-        
-    #counter += 1
 

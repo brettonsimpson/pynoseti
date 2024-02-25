@@ -243,6 +243,7 @@ def image_plotter(image):
     if len(image.data) > 0:
         plt.title(str(image.name))
         plt.imshow(image.data)
+        
         plt.show()
     #plt.close()
 
