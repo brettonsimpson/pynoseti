@@ -236,14 +236,14 @@ def get_image_source_ip(packet):
     return str(decimal_converted_packet(packet)[26])+'.'+str(decimal_converted_packet(packet)[27])+'.'+str(decimal_converted_packet(packet)[28])+'.'+str(decimal_converted_packet(packet)[29])
 
 
-# In[16]:
+# In[2]:
 
 
 def image_plotter(image):
     if len(image.data) > 0:
         plt.title(str(image.name))
         plt.imshow(image.data)
-        
+        plt.figure(figsize=(8, 8))
         plt.show()
     #plt.close()
 
@@ -326,5 +326,5 @@ def list_loading(list_input, counter):
     if counter == 19*len(list_input)/20:
         print("Loading [|||||||||||||||||||.]", end = "\r")
     if counter == 20*len(list_input)/20-1:
-        print("Loading Complete!", end = "\r")
+        print("Loading Complete! [||||||||||||||||||||]", end = "\r")
 

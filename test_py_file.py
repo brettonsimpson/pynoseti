@@ -16,7 +16,8 @@ import time
 # In[2]:
 
 
-#path = input('Please specify the location of your Wireshark capture file:')
+print("\n")
+path = input('Please specify the location of your Wireshark capture file: ')
 
 
 # In[3]:
@@ -31,7 +32,7 @@ import time
 # Declares the list that will hold the hexadecimal data for each packet.
 
 ###########################################################
-path = "C:/Users/brett/OneDrive/Code/Python/OIR Lab/Pause_onskyph0pe_ima0pe__20230426_040905.pcapng"
+#path = "C:/Users/brett/OneDrive/Code/Python/OIR Lab/Pause_onskyph0pe_ima0pe__20230426_040905.pcapng"
 # Specifies the path to the file to be used in processing.
 # Don't forget to change when using a new file.
 ###########################################################
