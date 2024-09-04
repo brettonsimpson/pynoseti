@@ -22,13 +22,13 @@ def separated_hex_values(packet):
     and separates each hexadecimal value and assings them to a list so that they can be iterated over within
     a loop for further processing.
     '''
-    separated_hexadecimal_array = []
+    separated_hexadecimal_array = np.array([])
     packet_length = len(packet)
     i = 0
     j = 1
     for character in packet:
         if j < packet_length:
-            separated_hexadecimal_array.append(packet[i]+packet[j])
+            separated_hexadecimal_array = np.append(separated_hexadecimal_array, packet[i]+packet[j])
             i += 2
             j += 2    
     return separated_hexadecimal_array
@@ -42,9 +42,9 @@ def hexadecimal_to_decimal(hexadecimal_array):
     '''
     This function reads the hexadecimal value list for a packet and converts each into decimal form.
     '''
-    decimal_array = []
+    decimal_array = np.array([])
     for element in hexadecimal_array:
-        decimal_array.append(int(element, 16))
+        decimal_array = np.append(decimal_array, int(element, 16))
     return decimal_array
 # Converts the separated hexadecimal array into a decimal array.
 
@@ -70,8 +70,8 @@ def isolate_packet_pixel_data(packet_data):
     This function removes non-pixel data from the list of integer values. For science images, this means the first
     16 values are removed.
     '''
-    converted_packet_data = decimal_converted_packet(packet_data)
-    return converted_packet_data[58:]
+
+    return decimal_converted_packet(packet_data)[58:]
 # Returns a decimal array for the packet data excluding the first 16 elements, which do not correspond to science packet
 # pixel data.
 
@@ -80,8 +80,7 @@ def isolate_packet_pixel_data(packet_data):
 
 
 def isolate_packet_data(packet_data):
-    converted_packet_data = decimal_converted_packet(packet_data)
-    return converted_packet_data[42:]
+    return decimal_converted_packet(packet_data)[42:]
 
 # The Wireshark capture files are 570 bytes in size. The pixel data are stored in the last 528 bytes of the capture.
 # Therefore, I am subtracting the first 58 bytes of the capture file because they do not correspond to pixel data.
@@ -92,57 +91,28 @@ def isolate_packet_data(packet_data):
 
 
 def convert_integer_to_binary(integer):
-    binary_array = []
+    binary_array = np.array([])
     bit_number = 0
     quotient = integer
     
     while bit_number <= 7:
-        binary_array.append(quotient%2)
+        binary_array = np.append(binary_array, quotient%2)
         quotient = int(quotient/2)
         bit_number += 1
 
     return binary_array
+
+
+
+def convert_packet_array_to_8bit_binary(packet):
+    packet_binary_array_8bit = np.array([])
+    for element in isolate_packet_pixel_data(packet):
+        packet_binary_array_8bit = np.append(packet_binary_array_8bit, convert_integer_to_binary(element))
+                
+    return packet_binary_array_8bit
 
 
 # In[8]:
-
-
-def convert_packet_array_to_8bit_binary(packet):
-    packet_binary_array_8bit = []
-    for element in isolate_packet_pixel_data(packet):
-        packet_binary_array_8bit.append(convert_integer_to_binary(element))
-                
-    return packet_binary_array_8bit
-
-
-# In[9]:
-
-
-def convert_integer_to_binary(integer):
-    binary_array = []
-    bit_number = 0
-    quotient = integer
-    
-    while bit_number <= 7:
-        binary_array.append(quotient%2)
-        quotient = int(quotient/2)
-        bit_number += 1
-
-    return binary_array
-
-
-# In[10]:
-
-
-def convert_packet_array_to_8bit_binary(packet):
-    packet_binary_array_8bit = []
-    for element in isolate_packet_pixel_data(packet):
-        packet_binary_array_8bit.append(convert_integer_to_binary(element))
-                
-    return packet_binary_array_8bit
-
-
-# In[11]:
 
 
 def concatenate_pixel_data_streams(packet):
@@ -171,7 +141,8 @@ def concatenate_pixel_data_streams(packet):
 
         i += 1
     
-    return combined_array
+    
+    return np.array(combined_array)
 
 
 # In[12]:
@@ -194,9 +165,9 @@ def convert_16bit_binary_to_integer(number):
 
 def concatenate_streams_and_convert_to_integer(packet):
     
-    concatenated_array = []
+    concatenated_array = np.array([])
     for element in concatenate_pixel_data_streams(packet):
-        concatenated_array.append(convert_16bit_binary_to_integer(element))
+        concatenated_array = np.append(concatenated_array, convert_16bit_binary_to_integer(element))
         
     return concatenated_array
 
@@ -206,22 +177,22 @@ def concatenate_streams_and_convert_to_integer(packet):
 
 def row_splitter(packet):
     
-    image = []
-    full_array = []
+    image = np.array([])
+    full_array = np.array([])
     counter = 0
     
     for element in concatenate_pixel_data_streams(packet):
-        full_array.append(convert_16bit_binary_to_integer(element))
-    row_array = []
+        full_array = np.append(full_array, convert_16bit_binary_to_integer(element))
+    row_array = np.append([])
     
     for element in full_array:
         if counter == 15:
-            image.append(row_array)
-            row_array.append(element)
+            image = np.append(image, row_array)
+            row_array = np.append(row_array, element)
             row_array = []
             counter = 0
         else:
-            row_array.append(element)
+            row_array = np.append(row_array, element)
             counter += 1
             
     return image

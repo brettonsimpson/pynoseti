@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -15,22 +9,10 @@ from IPython.display import display, clear_output
 import time
 import json
 
-
-# In[2]:
-
+start_time = time.time()
 
 print("\n")
 #path = input('Please specify the location of your Wireshark capture file: ')
-
-
-# In[3]:
-
-
-#print(path)
-
-
-# In[4]:
-
 
 # Declares the list that will hold the hexadecimal data for each packet.
 
@@ -41,7 +23,7 @@ path = "C:/Pause_onskyph0pe_ima0pe__20230426_040905.pcapng"
 # Don't forget to change when using a new file.
 ###########################################################
 
-packet_array = []
+packet_list = []
 # Declares the list that will hold the hexadecimal data for each packet.
 
 import datetime
@@ -57,54 +39,21 @@ with open(path, 'rb') as file:
             
             packet = block.packet_data
             hex_data = packet.hex()
-            packet_array.append(hex_data)
-            #timestamp_seconds = block.timestamp_high
-            #timestamp_nanoseconds = block.timestamp_low
-            #timestamp = timestamp_seconds + timestamp_nanoseconds/int(1e6)
-            #leap_seconds = 37
+            packet_list.append(hex_data)
 
-            #utc_timestamp = (timestamp_seconds - leap_seconds) + timestamp_nanoseconds / 1_000_000_000
+packet_array = np.array(packet_list)
 
-            #print(f"Packet timestamp: {utc_timestamp} seconds")
+#print('Done!')
 
 
-# In[5]:
-
-
-#file_packet_integer_data = []
-
-#for element in packet_array:
-#    file_packet_integer_data.append(isolate_packet_pixel_data(element))
-
-
-# In[6]:
-
-
-
-
-class Image:
+class Packet:
     def __init__(self, name, number, source_ip, data):
         self.name = name
         self.number = number
         self.source_ip = source_ip
         self.data = data
-        #self.timestamp = timestamp
 
-
-
-
-
-# In[7]:
-
-
-from functions import *
-
-file_packet_intensity_data = []
-image_list = []
-object_list = []
-
-counter = 0
-
+from functions_numpy import *
 
 class Quabo:
     def __init__(self, telescope, quadrant, address, datastream):
@@ -113,15 +62,15 @@ class Quabo:
         self.address = address
         self.datastream = datastream
 
-quabo_1_1 = Quabo('telescope_1', 1, '192.168.1.4', np.array([]))
-quabo_1_2 = Quabo('telescope_1', 2, '192.168.1.5', np.array([]))
-quabo_1_3 = Quabo('telescope_1', 3, '192.168.1.6', np.array([]))
-quabo_1_4 = Quabo('telescope_1', 4, '192.168.1.7', np.array([]))
+quabo_1_1 = Quabo('telescope_1', 1, '192.168.0.4', np.array([]))
+quabo_1_2 = Quabo('telescope_1', 2, '192.168.0.5', np.array([]))
+quabo_1_3 = Quabo('telescope_1', 3, '192.168.0.6', np.array([]))
+quabo_1_4 = Quabo('telescope_1', 4, '192.168.0.7', np.array([]))
 #####
-quabo_2_1 = Quabo('telescope_2', 1, '192.168.1.12', np.array([]))
-quabo_2_2 = Quabo('telescope_2', 2, '192.168.1.13', np.array([]))
-quabo_2_3 = Quabo('telescope_2', 3, '192.168.1.14', np.array([]))
-quabo_2_4 = Quabo('telescope_2', 4, '192.168.1.15', np.array([]))
+quabo_2_1 = Quabo('telescope_2', 1, '192.168.0.12', np.array([]))
+quabo_2_2 = Quabo('telescope_2', 2, '192.168.0.13', np.array([]))
+quabo_2_3 = Quabo('telescope_2', 3, '192.168.0.14', np.array([]))
+quabo_2_4 = Quabo('telescope_2', 4, '192.168.0.15', np.array([]))
 #####
 quabo_3_1 = Quabo('telescope_3', 1, '192.168.3.248', np.array([]))
 quabo_3_2 = Quabo('telescope_3', 2, '192.168.3.249', np.array([]))
@@ -143,114 +92,40 @@ telescope_list = [telescope_1, telescope_2, telescope_3]
 print("Converting hexidecimal data to photon intensity...")
 print("\n")
 
-for packet in packet_array:
-    
-    file_packet_intensity_data.append(row_splitter(packet))
-    image_list.append('image'+str(counter))
-    image_object = Image('image'+str(counter),
-                         counter, get_image_source_ip(packet),
-                         file_packet_intensity_data[counter],
-                         #block.timestamp_high + block.timestamp_low/int(1e6),
-                         )
-    object_list.append(image_object)
+image_list = []
+counter = 0
 
+for packet in packet_array:
+    packet_object = Packet('image'+str(counter), counter, get_image_source_ip(packet), row_splitter(packet))
     for telescope in telescope_list:
         for quabo in telescope.quabo_array:
-            if image_object.source_ip == quabo.address:
+            if packet_object.source_ip == quabo.address:
                 quabo.datastream = np.append(quabo.datastream, row_splitter(packet))
-
-
-    
+                
     list_loading(packet_array, counter)
-    
     counter += 1
 
 
 
 
-#for telescope in telescope_list:
-#        if image_object.source_ip in telescope.quabo_addresses:
-#            telescope.datastream = np.append(telescope.datastream, image_object)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# In[ ]:
-
-
-#object_list = []
-#
-#counter = 0
-#
-#for image in packet_array:
-#    image_object = Image('image'+str(counter), counter, get_image_source_ip(image), file_packet_intensity_data[counter])
-#    object_list.append(image_object)
-#    counter += 1
-
-
-# In[ ]:
-
-
-ip_list = []
-
-for element in object_list:
-    if element.source_ip not in ip_list:
-        ip_list.append(element.source_ip)
-        
-print("\n")
-print("Retrieving source IP addresses...")
-
-
-# In[ ]:
-
-
-initial_list = []
-
-for element in ip_list:
-    new_list = [element]
-    initial_list.append(new_list)
-
-address_dictionary = {key: [] for key in ip_list}
-
-for element in object_list:
-    for key in address_dictionary:
-        if element.source_ip == key:
-            address_dictionary[key].append(element.name)
-
-
-# In[ ]:
-
-
-specific_ip_list = []
-
-
-for element in object_list:
-    if element.source_ip == '192.168.0.4':
-        specific_ip_list.append(element)
-
-
-
-
+print(telescope_list[0].quabo_array[0].datastream)
 
 
 #telescope_list[0].quabo_array[0].datastream
 
+end_time = time.time()
+print(end_time-start_time)
+
+#print(len(telescope_list[0].quabo_array[0].datastream[0]))
+
+
+#exit()
 
 
 fig, ax = plt.subplots()
 
 matrix = np.zeros((10, 10))
-im = ax.imshow(telescope_list[0].quabo_array[0].datastream[0], cmap='viridis', vmin=0)
+im = ax.imshow(telescope_list[0].quabo_array[0].datastream, cmap='viridis', vmin=0)
 title = ax.set_title(telescope_list[0].quabo_array[0].address)
 
 
@@ -284,7 +159,6 @@ for element in object_list:
         counter += 1
 
 
-# In[ ]:
 
 
 
