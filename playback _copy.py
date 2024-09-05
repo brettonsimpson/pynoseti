@@ -8,6 +8,7 @@ import os
 from IPython.display import display, clear_output
 import time
 import json
+import progressbar
 
 start_time = time.time()
 
@@ -36,10 +37,40 @@ with open(path, 'rb') as file:
         if isinstance(block, pcapng.blocks.EnhancedPacket):
             # Checks, while iterating over each block, if it is of the EnchancedPacket data type. If so,
             # its hexadecimal packet data is stored in 'packet_array'.
-            
             packet = block.packet_data
             hex_data = packet.hex()
             packet_array.append(hex_data)
+
+class Quabo:
+    def __init__(self, address, data):
+        self.address = address
+        self.data = data
+
+class Telescope:
+    def __init__(self, name, dome, quabo_array, data):
+        self.name = name
+        self.dome = dome
+        self.quabo_array = quabo_array
+        self.data = data
+
+with open('config.json', 'r') as file:
+    config = json.load(file)
+telescope_list = []
+quabo_list = []
+for setting in config['telescopes']:
+    telescope = Telescope(name = setting['identifier'],
+                          dome = setting['dome'], 
+                          quabo_array = setting['quabo_array'],
+                          data = [[],[],[],[]]
+                          )
+    telescope_list.append(telescope)
+    for address in telescope.quabo_array:
+        if address not in quabo_list:
+            quabo_list.append(Quabo(address, []))
+
+
+print("Converting hexidecimal data to photon intensity...")
+print("\n")
 
 class Packet:
     def __init__(self, name, number, source_ip, data):
@@ -50,54 +81,50 @@ class Packet:
 
 from functions import *
 
-class Quabo:
-    def __init__(self, telescope, quadrant, address, datastream):
-        self.telescope = telescope
-        self.quadrant = quadrant
-        self.address = address
-        self.datastream = datastream
+print('Recognized telescopes:', '\n')
+for telescope in telescope_list:
+    print(telescope.name+', ')
+print('\n')
+telescope_choice = input('Which telescope would you like to playback data for?\nSkip this prompt by pressing enter and process the entire file.\nEnter the integer corresponding to one of the telescopes: ')
 
-quabo_1_1 = Quabo('telescope_1', 1, '192.168.0.4', [])
-quabo_1_2 = Quabo('telescope_1', 2, '192.168.0.5', [])
-quabo_1_3 = Quabo('telescope_1', 3, '192.168.0.6', [])
-quabo_1_4 = Quabo('telescope_1', 4, '192.168.0.7', [])
-#####
-quabo_2_1 = Quabo('telescope_2', 1, '192.168.0.12', [])
-quabo_2_2 = Quabo('telescope_2', 2, '192.168.0.13', [])
-quabo_2_3 = Quabo('telescope_2', 3, '192.168.0.14', [])
-quabo_2_4 = Quabo('telescope_2', 4, '192.168.0.15', [])
-#####
-quabo_3_1 = Quabo('telescope_3', 1, '192.168.3.248', [])
-quabo_3_2 = Quabo('telescope_3', 2, '192.168.3.249', [])
-quabo_3_3 = Quabo('telescope_3', 3, '192.168.3.250', [])
-quabo_3_4 = Quabo('telescope_3', 4, '192.168.3.251', [])
+if telescope_choice == '1':
+    i=0
+    bar = progressbar.ProgressBar(max_value=len(packet_array))
+    for packet in packet_array:
+        j=0
+        for address in telescope_list[0].quabo_array:
+            if get_image_source_ip(packet) == address:
+                quabo_list[j].data.append(packet)
+        bar.update(i)
+        i+=1
 
-class Telescope:
-    def __init__(self, name, dome, quabo_array):
-        self.name = name
-        self.dome = dome
-        self.quabo_array = quabo_array
+elif telescope_choice == '2':
+    i=0
+    bar = progressbar.ProgressBar(max_value=len(packet_array))
+    for packet in packet_array:
+        j=0
+        for address in telescope_list[1].quabo_array:
+            if get_image_source_ip(packet) == address:
+                quabo_list[j].data.append(packet)
+        bar.update(i)
+        i+=1
 
-telescope_1 = Telescope('telescope_1', 'Astrograph', [quabo_1_1, quabo_1_2, quabo_1_3, quabo_1_4])
-telescope_2 = Telescope('telescope_2', 'Astrograph', [quabo_2_1, quabo_2_2, quabo_2_3, quabo_2_4])
-telescope_3 = Telescope('telescope_3', 'Barnard', [quabo_3_1, quabo_3_2, quabo_3_3, quabo_3_4])
+elif telescope_choice == '3':
+    i=0
+    bar = progressbar.ProgressBar(max_value=len(packet_array))
+    for packet in packet_array:
+        j=0
+        for address in telescope_list[2].quabo_array:
+            if get_image_source_ip(packet) == address:
+                quabo_list[j].data.append(packet)
+        bar.update(i)
+        i+=1
 
-telescope_list = [telescope_1, telescope_2, telescope_3]
+else:
+    print('\n***under construction***\n')
 
-print("Converting hexidecimal data to photon intensity...")
-print("\n")
 
-counter = 0
-
-for packet in packet_array:
-    packet_object = Packet('image'+str(counter), counter, get_image_source_ip(packet), row_splitter(packet))
-    for telescope in telescope_list:
-        for quabo in telescope.quabo_array:
-            if packet_object.source_ip == quabo.address:
-                quabo.datastream.append(row_splitter(packet))
-                
-    list_loading(packet_array, counter)
-    counter += 1
+exit()
 
 image_list = []
 i=0

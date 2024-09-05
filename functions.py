@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 import pcapng
@@ -11,9 +5,6 @@ from pcapng import FileScanner
 import os
 from IPython.display import display, clear_output
 import time
-
-
-# In[2]:
 
 
 def separated_hex_values(packet):
@@ -34,10 +25,6 @@ def separated_hex_values(packet):
     return separated_hexadecimal_array
 # Reads the raw hexadecimal data string for a packet and encodes it into a list of hexadecimal values.
 
-
-# In[3]:
-
-
 def hexadecimal_to_decimal(hexadecimal_array):
     '''
     This function reads the hexadecimal value list for a packet and converts each into decimal form.
@@ -49,9 +36,6 @@ def hexadecimal_to_decimal(hexadecimal_array):
 # Converts the separated hexadecimal array into a decimal array.
 
 
-# In[4]:
-
-
 def decimal_converted_packet(packet):
     '''
     This function performs the operations for both the 'separated_hex_values' and 'convert_hexadecimal_to_decimal'
@@ -60,9 +44,6 @@ def decimal_converted_packet(packet):
     return hexadecimal_to_decimal(separated_hex_values(packet))
 # Performs the function of the 'separated_hex_values' function and then performs the 'convert_hexadecimal_to_decimal' 
 # function on the same data.
-
-
-# In[5]:
 
 
 def isolate_packet_pixel_data(packet_data):
@@ -76,9 +57,6 @@ def isolate_packet_pixel_data(packet_data):
 # pixel data.
 
 
-# In[6]:
-
-
 def isolate_packet_data(packet_data):
     converted_packet_data = decimal_converted_packet(packet_data)
     return converted_packet_data[42:]
@@ -88,7 +66,25 @@ def isolate_packet_data(packet_data):
 # This must be done in combination with the subtraction of the first 16 elements of each packet.
 
 
-# In[7]:
+def convert_integer_to_binary(integer):
+    binary_array = []
+    bit_number = 0
+    quotient = integer
+    
+    while bit_number <= 7:
+        binary_array.append(quotient%2)
+        quotient = int(quotient/2)
+        bit_number += 1
+
+    return binary_array
+
+
+def convert_packet_array_to_8bit_binary(packet):
+    packet_binary_array_8bit = []
+    for element in isolate_packet_pixel_data(packet):
+        packet_binary_array_8bit.append(convert_integer_to_binary(element))
+                
+    return packet_binary_array_8bit
 
 
 def convert_integer_to_binary(integer):
@@ -104,8 +100,6 @@ def convert_integer_to_binary(integer):
     return binary_array
 
 
-# In[8]:
-
 
 def convert_packet_array_to_8bit_binary(packet):
     packet_binary_array_8bit = []
@@ -113,36 +107,6 @@ def convert_packet_array_to_8bit_binary(packet):
         packet_binary_array_8bit.append(convert_integer_to_binary(element))
                 
     return packet_binary_array_8bit
-
-
-# In[9]:
-
-
-def convert_integer_to_binary(integer):
-    binary_array = []
-    bit_number = 0
-    quotient = integer
-    
-    while bit_number <= 7:
-        binary_array.append(quotient%2)
-        quotient = int(quotient/2)
-        bit_number += 1
-
-    return binary_array
-
-
-# In[10]:
-
-
-def convert_packet_array_to_8bit_binary(packet):
-    packet_binary_array_8bit = []
-    for element in isolate_packet_pixel_data(packet):
-        packet_binary_array_8bit.append(convert_integer_to_binary(element))
-                
-    return packet_binary_array_8bit
-
-
-# In[11]:
 
 
 def concatenate_pixel_data_streams(packet):
@@ -174,9 +138,6 @@ def concatenate_pixel_data_streams(packet):
     return combined_array
 
 
-# In[12]:
-
-
 def convert_16bit_binary_to_integer(number):
     
     i = 15
@@ -189,8 +150,6 @@ def convert_16bit_binary_to_integer(number):
     return integer
 
 
-# In[13]:
-
 
 def concatenate_streams_and_convert_to_integer(packet):
     
@@ -199,9 +158,6 @@ def concatenate_streams_and_convert_to_integer(packet):
         concatenated_array.append(convert_16bit_binary_to_integer(element))
         
     return concatenated_array
-
-
-# In[14]:
 
 
 def row_splitter(packet):
@@ -229,111 +185,15 @@ def row_splitter(packet):
 #creates a 2D array with 16 rows of 16 elements (pixel data to be plotted)
 
 
-# In[15]:
+def quabo_image_compiler(quabo_1, quabo_2, quabo_3, quabo_4):
+
+    final_quadrant_1 = np.kron(np.array([[0,1],[0,0]]), quabo_1)
+    final_quadrant_2 = np.kron(np.array([[0,0],[0,1]]), np.rot90(quabo_2, -1))
+    final_quadrant_3 = np.kron(np.array([[0,0],[1,0]]), np.rot90(quabo_3, -2))
+    final_quadrant_4 = np.kron(np.array([[1,0],[0,0]]), np.rot90(quabo_4, -4))
+
+    return final_quadrant_1+final_quadrant_2+final_quadrant_3+final_quadrant_4
 
 
 def get_image_source_ip(packet):
     return str(decimal_converted_packet(packet)[26])+'.'+str(decimal_converted_packet(packet)[27])+'.'+str(decimal_converted_packet(packet)[28])+'.'+str(decimal_converted_packet(packet)[29])
-
-
-#def get_packet_TAI_time(packet):
-#
-#    byte1 = decimal_converted_packet(packet)[]
-#    byte2 =
-#    byte3 =
-#    byte4 =
-
-#    return
-
-# In[2]:
-
-
-def image_plotter(image):
-    if len(image.data) > 0:
-        plt.title(str(image.name))
-        plt.imshow(image.data)
-        plt.figure(figsize=(8, 8))
-        plt.show()
-    #plt.close()
-
-
-# In[17]:
-
-
-def loading_old():
-    
-    complete = False
-    
-    while True:
-        print("Loading |", end = "\r")
-        time.sleep(0.25)
-        #clear_output(wait=True)
-        print("Loading /", end = "\r")
-        time.sleep(0.25)
-        #clear_output(wait=True)
-        print("Loading —", end = "\r")
-        time.sleep(0.25)
-        #clear_output(wait=True)
-        print("Loading \\", end = "\r")
-        time.sleep(0.25)
-        #clear_output(wait=True)
-        
-        if complete == True:
-            return
-
-
-# In[18]:
-
-
-def loading_complete():
-    return
-
-
-# In[ ]:
-
-
-def list_loading(list_input, counter):
-    
-    if counter == 0:
-        print("Loading [....................]", end = "\r")
-    if counter == len(list_input)/20:
-        print("Loading [|...................]", end = "\r")
-    if counter == 2*len(list_input)/20:
-        print("Loading [||..................]", end = "\r")
-    if counter == 3*len(list_input)/20:
-        print("Loading [|||.................]", end = "\r")
-    if counter == 4*len(list_input)/20:
-        print("Loading [||||................]", end = "\r")
-    if counter == 5*len(list_input)/20:
-        print("Loading [|||||...............]", end = "\r")
-    if counter == 6*len(list_input)/20:
-        print("Loading [||||||..............]", end = "\r")
-    if counter == 7*len(list_input)/20:
-        print("Loading [|||||||.............]", end = "\r")
-    if counter == 8*len(list_input)/20:
-        print("Loading [||||||||............]", end = "\r")
-    if counter == 9*len(list_input)/20:
-        print("Loading [|||||||||...........]", end = "\r")
-    if counter == 10*len(list_input)/20:
-        print("Loading [||||||||||..........]", end = "\r")
-    if counter == 11*len(list_input)/20:
-        print("Loading [|||||||||||.........]", end = "\r")
-    if counter == 12*len(list_input)/20:
-        print("Loading [||||||||||||........]", end = "\r")
-    if counter == 13*len(list_input)/20:
-        print("Loading [|||||||||||||.......]", end = "\r")
-    if counter == 14*len(list_input)/20:
-        print("Loading [||||||||||||||......]", end = "\r")
-    if counter == 15*len(list_input)/20:
-        print("Loading [|||||||||||||||.....]", end = "\r")
-    if counter == 16*len(list_input)/20:
-        print("Loading [||||||||||||||||....]", end = "\r")
-    if counter == 17*len(list_input)/20:
-        print("Loading [|||||||||||||||||...]", end = "\r")
-    if counter == 18*len(list_input)/20:
-        print("Loading [||||||||||||||||||..]", end = "\r")
-    if counter == 19*len(list_input)/20:
-        print("Loading [|||||||||||||||||||.]", end = "\r")
-    if counter == 20*len(list_input)/20-1:
-        print("Loading Complete! [||||||||||||||||||||]", end = "\r")
-

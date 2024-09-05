@@ -1,0 +1,44 @@
+{
+    "telescopes": 
+    [
+        {"identifier": "telescope_1",
+        
+        "dome": "Astrograph",
+
+        "quabo_array": 
+        [
+            "192.168.0.4",
+            "192.168.0.5",
+            "192.168.0.6",
+            "192.168.0.7"
+        ]
+        },
+
+        {"identifier": "telescope_2",
+        
+        "dome": "Astrograph",
+
+        "quabo_array": 
+        [
+            "192.168.0.12",
+            "192.168.0.13",
+            "192.168.0.14",
+            "192.168.0.15"
+        ]
+        },
+
+        {"identifier": "telescope_3",
+        
+        "dome": "Barnard",
+
+        "quabo_array": 
+        [
+            "192.168.3.248",
+            "192.168.3.249",
+            "192.168.3.250",
+            "192.168.3.251"
+        ]
+        }
+    ]
+}
+
