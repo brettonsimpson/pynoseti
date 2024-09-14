@@ -6,7 +6,6 @@ import os
 from IPython.display import display, clear_output
 import time
 
-
 def separated_hex_values(packet):
     '''
     This function reads in a list of hexadecimal packet data, without spaces between each pair of characters,
@@ -35,7 +34,6 @@ def hexadecimal_to_decimal(hexadecimal_array):
     return decimal_array
 # Converts the separated hexadecimal array into a decimal array.
 
-
 def decimal_converted_packet(packet):
     '''
     This function performs the operations for both the 'separated_hex_values' and 'convert_hexadecimal_to_decimal'
@@ -44,7 +42,6 @@ def decimal_converted_packet(packet):
     return hexadecimal_to_decimal(separated_hex_values(packet))
 # Performs the function of the 'separated_hex_values' function and then performs the 'convert_hexadecimal_to_decimal' 
 # function on the same data.
-
 
 def isolate_packet_pixel_data(packet_data):
     '''
@@ -56,7 +53,6 @@ def isolate_packet_pixel_data(packet_data):
 # Returns a decimal array for the packet data excluding the first 16 elements, which do not correspond to science packet
 # pixel data.
 
-
 def isolate_packet_data(packet_data):
     converted_packet_data = decimal_converted_packet(packet_data)
     return converted_packet_data[42:]
@@ -65,6 +61,24 @@ def isolate_packet_data(packet_data):
 # Therefore, I am subtracting the first 58 bytes of the capture file because they do not correspond to pixel data.
 # This must be done in combination with the subtraction of the first 16 elements of each packet.
 
+def convert_integer_to_binary(integer):
+    binary_array = []
+    bit_number = 0
+    quotient = integer
+    
+    while bit_number <= 7:
+        binary_array.append(quotient%2)
+        quotient = int(quotient/2)
+        bit_number += 1
+
+    return binary_array
+
+def convert_packet_array_to_8bit_binary(packet):
+    packet_binary_array_8bit = []
+    for element in isolate_packet_pixel_data(packet):
+        packet_binary_array_8bit.append(convert_integer_to_binary(element))
+                
+    return packet_binary_array_8bit
 
 def convert_integer_to_binary(integer):
     binary_array = []
@@ -78,36 +92,12 @@ def convert_integer_to_binary(integer):
 
     return binary_array
 
-
 def convert_packet_array_to_8bit_binary(packet):
     packet_binary_array_8bit = []
     for element in isolate_packet_pixel_data(packet):
         packet_binary_array_8bit.append(convert_integer_to_binary(element))
                 
     return packet_binary_array_8bit
-
-
-def convert_integer_to_binary(integer):
-    binary_array = []
-    bit_number = 0
-    quotient = integer
-    
-    while bit_number <= 7:
-        binary_array.append(quotient%2)
-        quotient = int(quotient/2)
-        bit_number += 1
-
-    return binary_array
-
-
-
-def convert_packet_array_to_8bit_binary(packet):
-    packet_binary_array_8bit = []
-    for element in isolate_packet_pixel_data(packet):
-        packet_binary_array_8bit.append(convert_integer_to_binary(element))
-                
-    return packet_binary_array_8bit
-
 
 def concatenate_pixel_data_streams(packet):
     even_array = []
@@ -137,7 +127,6 @@ def concatenate_pixel_data_streams(packet):
     
     return combined_array
 
-
 def convert_16bit_binary_to_integer(number):
     
     i = 15
@@ -149,8 +138,6 @@ def convert_16bit_binary_to_integer(number):
     
     return integer
 
-
-
 def concatenate_streams_and_convert_to_integer(packet):
     
     concatenated_array = []
@@ -158,7 +145,6 @@ def concatenate_streams_and_convert_to_integer(packet):
         concatenated_array.append(convert_16bit_binary_to_integer(element))
         
     return concatenated_array
-
 
 def row_splitter(packet):
     
@@ -184,7 +170,6 @@ def row_splitter(packet):
 
 #creates a 2D array with 16 rows of 16 elements (pixel data to be plotted)
 
-
 def quabo_image_compiler(quabo_1, quabo_2, quabo_3, quabo_4):
 
     final_quadrant_1 = np.kron(np.array([[0,1],[0,0]]), quabo_1)
@@ -194,6 +179,6 @@ def quabo_image_compiler(quabo_1, quabo_2, quabo_3, quabo_4):
 
     return final_quadrant_1+final_quadrant_2+final_quadrant_3+final_quadrant_4
 
-
 def get_image_source_ip(packet):
+
     return str(decimal_converted_packet(packet)[26])+'.'+str(decimal_converted_packet(packet)[27])+'.'+str(decimal_converted_packet(packet)[28])+'.'+str(decimal_converted_packet(packet)[29])
