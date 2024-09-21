@@ -1,10 +1,25 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import pcapng
-from pcapng import FileScanner
-import os
-from IPython.display import display, clear_output
-import time
+from scipy.ndimage import label, center_of_mass
+from datetime import datetime
+
+class Quabo:
+    def __init__(self, address, data):
+        self.address = address
+        self.data = data
+
+class Telescope:
+    def __init__(self, name, dome, quabo_addresses, data):
+        self.name = name
+        self.dome = dome
+        self.quabo_addresses = quabo_addresses
+        self.data = data
+
+class Image:
+    def __init__(self, data, timestamp, dome):
+        self.data = data
+        self.timestamp = timestamp
+        self.dome = dome
 
 def separated_hex_values(packet):
     '''
@@ -179,6 +194,23 @@ def quabo_image_compiler(quabo_1, quabo_2, quabo_3, quabo_4):
 
     return final_quadrant_1+final_quadrant_2+final_quadrant_3+final_quadrant_4
 
+
 def get_image_source_ip(packet):
 
     return str(decimal_converted_packet(packet)[26])+'.'+str(decimal_converted_packet(packet)[27])+'.'+str(decimal_converted_packet(packet)[28])+'.'+str(decimal_converted_packet(packet)[29])
+
+def convert_unix_time(time):
+
+    date_object = datetime.fromtimestamp(time)
+    output = date_object.strftime('%Y-%m-%d %H:%M:%S') +':'+ str(date_object.microsecond)
+
+    return output
+
+
+def identify_centroids(image):
+
+    #image = 
+
+    labels, features = label(image)
+
+    centroids = center_of_mass(image, labels, )
