@@ -1,6 +1,6 @@
 import os
-#import time
 import json
+import pcapng
 import datetime
 import progressbar
 import numpy as np
@@ -24,14 +24,12 @@ os.mkdir(str(path)+'/pynoseti')
 print('\nTarget directory created for selected files at '+str(path)+'/panoseti\n')
 
 with os.scandir(path) as files:
-
     file_count = 0
     for file in files:
         if file.is_file():
             file_count += 1
     
 with os.scandir(path) as files:
-
     file_number = 1
     for file in files:
         if file.is_file():

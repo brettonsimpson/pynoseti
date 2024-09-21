@@ -205,12 +205,3 @@ def convert_unix_time(time):
     output = date_object.strftime('%Y-%m-%d %H:%M:%S') +':'+ str(date_object.microsecond)
 
     return output
-
-
-def identify_centroids(image):
-
-    #image = 
-
-    labels, features = label(image)
-
-    centroids = center_of_mass(image, labels, )
