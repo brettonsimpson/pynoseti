@@ -8,7 +8,7 @@ def playback_function():
     import progressbar
 
     array_image_list = reader_function()
-    exit()
+    
     telescope_choice = input('\nWhich telescope would you like to playback data for?\n'
                             'Skip this prompt by pressing enter and process the entire file.\n'
                             'Enter the integer corresponding to one of the telescopes: ')
