@@ -1,28 +1,18 @@
 from functions import *
 
-def reader_function():
-    #path = input('Please specify the location of your Wireshark capture file: ')
-    from pcapng import FileScanner
-    from pcapng.blocks import EnhancedPacket
+def reader_function(path):
     import os
     import json
     import pcapng
     import datetime
     import progressbar
     import numpy as np
-
-    # Declares the list that will hold the hexadecimal data for each packet.
-
-    ###########################################################
-    #path = "//wsl.localhost/Ubuntu-20.04/home/brett/Data_for_pynoseti/Pause_onskyph0pe_ima0pe__20230426_041905.pcapng"
-    path = "/home/brett/Data_for_pynoseti/Pause_onskyph0pe_ima0pe__20230426_040905.pcapng"
-    # Specifies the path to the file to be used in processing.
-    # Don't forget to change when using a new file.
-    ###########################################################
+    from pcapng import FileScanner
+    from pcapng.blocks import EnhancedPacket
 
     path = "/home/brett/Data_for_pynoseti"
     os.mkdir(str(path)+'/pynoseti')
-    print('\nTarget directory created for selected files at '+str(path)+'/panoseti\n')
+    print('Target directory created for selected files at '+str(path)+'/panoseti\n')
 
     with os.scandir(path) as files:
         file_count = 0
@@ -43,7 +33,7 @@ def reader_function():
                 timestamp_list = []
                 # Declares the list that will be used to record the timestamps for each packet.
 
-                print(f'Reading file {file_number} of {file_count}...')
+                print(f'Processing file {file_number} of {file_count}...')
 
                 class Packet:
                     def __init__(self, source_ip, timestamp, data):
@@ -55,13 +45,16 @@ def reader_function():
                     scanner = FileScanner(file)
                     for block in scanner:
                         if isinstance(block, pcapng.blocks.EnhancedPacket):
+                            #print(len(block.packet_data.hex()))
                             # Checks, while iterating over each block, if it is of the EnchancedPacket data type. If so,
                             # its hexadecimal packet data is stored in 'packet_array'.
 
-                            packet_list.append(block.packet_data.hex())
+                            if len(block.packet_data.hex()) > 75:
 
-                            if hasattr(block, 'timestamp'):
-                                timestamp_list.append(block.timestamp)
+                                packet_list.append(block.packet_data.hex())
+
+                                if hasattr(block, 'timestamp'):
+                                    timestamp_list.append(block.timestamp)
 
                 i=0
                 packet_array = []
@@ -104,7 +97,6 @@ def reader_function():
                 #telescope_choice = int(telescope_choice)-1
 
                 array_image_list = []
-
                 for telescope in telescope_list:
 
                     for packet in packet_array:
@@ -115,13 +107,10 @@ def reader_function():
                     for packet in telescope.data:
                         if packet.source_ip == telescope.quabo_addresses[0]:
                             processed_packet_list[0].append(packet)
-
                         elif packet.source_ip == telescope.quabo_addresses[1]:
                             processed_packet_list[1].append(packet)
-
                         elif packet.source_ip == telescope.quabo_addresses[2]:
                             processed_packet_list[2].append(packet)
-
                         elif packet.source_ip == telescope.quabo_addresses[3]:
                             processed_packet_list[3].append(packet)
 
@@ -132,16 +121,16 @@ def reader_function():
 
                     i=0
                     telescope_image_list = []
-                    #image_median = np.median(quabo_image_compiler(processed_packet_list[0][int(np.min(board_frame_count)/2)].data,
-                    #                                            processed_packet_list[1][int(np.min(board_frame_count)/2)].data,
-                    #                                            processed_packet_list[2][int(np.min(board_frame_count)/2)].data,
-                    #                                            processed_packet_list[3][int(np.min(board_frame_count)/2)].data))
+                    image_median = np.median(quabo_image_compiler(processed_packet_list[0][int(np.min(board_frame_count)/2)].data,
+                                                                processed_packet_list[1][int(np.min(board_frame_count)/2)].data,
+                                                                processed_packet_list[2][int(np.min(board_frame_count)/2)].data,
+                                                                processed_packet_list[3][int(np.min(board_frame_count)/2)].data))
                     
                     for element in range(np.min(board_frame_count)):
                         telescope_image_list.append(Image(quabo_image_compiler(processed_packet_list[0][i].data,
                                                                 processed_packet_list[1][i].data,
                                                                 processed_packet_list[2][i].data,
-                                                                processed_packet_list[3][i].data),#-image_median,
+                                                                processed_packet_list[3][i].data)-image_median,
                                                 processed_packet_list[0][i].timestamp,
                                                 telescope.dome))
                         i+=1
@@ -154,4 +143,6 @@ def reader_function():
 
                 file.close()
                 file_number += 1
-                print('\nComplete!')
+                print('\nComplete!\n')
+
+    #return array_image_list
