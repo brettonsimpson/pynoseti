@@ -9,19 +9,21 @@ print('4: Perform all operations listed above.\n')
 option = int(input('Enter the integer corresponding to the action you would like to do: '))
 
 import os
+import time
 import numpy as np
 from functions import *
-from reader import reader_function
+from reader_copy import reader_function
 from playback import playback_function
 from analyzer import analyzer_function
 
+#start_time = time.time()
 
 if option == 1:
 
-    #path = input('Please enter a directory for files you want to process: ')
-    #path = path.replace('\\', '/')
-    #path = path.replace('"', '')
-    path = '/home/brett/Data_for_pynoseti'
+    path = input('Please enter a directory for files you want to process: ')
+    path = path.replace('\\', '/')
+    path = path.replace('"', '')
+    #path = '/home/brett/Data_for_pynoseti'
     path = str(path)+'/pynoseti'
 
     if os.path.isdir(path):
@@ -33,6 +35,7 @@ if option == 1:
         print('\nPreprocessed file directory recognized. Advancing to video file generation.')
 
         if telescope_choice != '':
+            print('test')
             choice = int(telescope_choice)-1
             with os.scandir(path) as files:
                 file_count = 1
@@ -44,22 +47,27 @@ if option == 1:
 
         elif telescope_choice == '':
             with os.scandir(path) as files:
+                file_count = 1
                 for file in files:
                     if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
-                        playback_function(file, telescope_choice)
+                        playback_function(file, telescope_choice, file_count)
+                        file_count+=1
+                        print('test')
+
 
     else:
         print('\nPreprocessed file directory not recognized. Generating file directory...')
-        reader_function(path)
-
         telescope_choice = input('Which telescope would you like to playback data for?\n'
                             'Skip this prompt by pressing enter and process the entire file.\n'
                             'Enter the integer corresponding to one of the telescopes: ')
-
+        print('')
+        
+        reader_function(path)
+        
         if telescope_choice != '':
             choice = int(telescope_choice)-1
             with os.scandir(path) as files:
-                file_count = 1
+                file_count = 0
                 for file in files:
                     if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
                         if file_count == choice:
@@ -68,9 +76,11 @@ if option == 1:
 
         elif telescope_choice == '':
             with os.scandir(path) as files:
+                file_count = 1
                 for file in files:
+                    file_count += 1
                     if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
-                        playback_function(file, telescope_choice)
+                        playback_function(file, telescope_choice, file_count)
 
 elif option == 2:
     path = input('\nPlease provide the directory of the files you would like to generate an event log for: ')
@@ -88,6 +98,8 @@ elif option == 3:
     path = input('\nPlease provide the directory of the files you would like to preprocess: ')
     path = path.replace('\\', '/')
     path = path.replace('"', '')
+
+    path = '/home/brett/Data_for_pynoseti/ph_plane'
     reader_function(path)
     print('Preprocessing of file directory complete!\n')
 
@@ -148,3 +160,8 @@ elif option == 4:
                             playback_function(file, telescope_choice)
 
     analyzer_function(target_path)
+
+
+
+#end_time = time.time()
+print('Reduction completed in '+str(end_time-start_time)+' seconds!')

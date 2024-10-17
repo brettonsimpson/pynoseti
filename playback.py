@@ -1,5 +1,5 @@
 from functions import *
-def playback_function(file, choice):
+def playback_function(file, choice, file_count):
 
     import os
     import numpy as np
@@ -16,7 +16,7 @@ def playback_function(file, choice):
         telescope_choice = int(telescope_choice)-1
 
         fig, ax = plt.subplots()
-        im = ax.imshow(array_image_list[telescope_choice][0].data, cmap='viridis', vmin=0)
+        im = ax.imshow(array_image_list[telescope_choice][0].data, cmap='viridis', vmin=0, vmax=10000)
         cbar = fig.colorbar(im, ax=ax, orientation='vertical')
         title = ax.set_title('Frame Time: '+convert_unix_time(array_image_list[telescope_choice][0].timestamp), loc='left')
         timestamp = ax.text(-0.5, 33, 'Frame 0 of '+str(len(array_image_list[telescope_choice])))
@@ -35,7 +35,8 @@ def playback_function(file, choice):
         print('Complete!\n\n')
 
     elif telescope_choice == '':
-
+        
+        
         j=0
         print('\nRendering movie files for all telescopes...')
         bar = progressbar.ProgressBar(max_value=len(array_image_list))
@@ -57,6 +58,6 @@ def playback_function(file, choice):
                 return [im, ax]
 
             animation_test = animation.FuncAnimation(fig, animate, frames=len(array_image_list[j]), interval=100, blit=False)
-            animation_test.save(f'telescope_{j}_movie.mp4', writer='ffmpeg', fps=30)
+            animation_test.save(f'telescope_{j}_movie_{file_count}.mp4', writer='ffmpeg', fps=30)
             j+=1
             bar.update(j)

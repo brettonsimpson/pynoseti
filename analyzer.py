@@ -53,11 +53,13 @@ def analyzer_function(path):
                             labeled_array, feature_number = ndimage.label(threshold_image)
                             centroids = ndimage.center_of_mass(threshold_image, labeled_array, range(1, feature_number+1))
 
-                            events['Pixel Locations'].append(centroids)
-                            events['Peak Count'].append(len(centroids))
-                            events['Time'].append(convert_unix_time(frame.timestamp))
-                            events['Threshold'].append(count_threshold)
-                            events['File Path'].append(path+file_name)
+                            if len(centroids) > 0:
+
+                                events['Pixel Locations'].append(centroids)
+                                events['Peak Count'].append(len(centroids))
+                                events['Time'].append(convert_unix_time(frame.timestamp))
+                                events['Threshold'].append(count_threshold)
+                                events['File Path'].append(path+file_name)
                             i+=1
 
                     j+=1

@@ -9,6 +9,8 @@ def reader_function(path):
     import numpy as np
     from pcapng import FileScanner
     from pcapng.blocks import EnhancedPacket
+    import pyshark
+    import time
 
     #path = "/home/brett/Data_for_pynoseti"
     os.mkdir(str(path)+'/pynoseti')
@@ -43,6 +45,19 @@ def reader_function(path):
                         self.length = length
                         self.number = number
 
+                start_time = time.time()
+                i=0
+                file_data = pyshark.FileCapture(file, use_json=True, include_raw=True)
+                for packet in file_data:
+                    i+=1
+                end_time = time.time()
+                print('Counting completed in '+str(end_time-start_time)+' seconds!')
+
+                #for packet in file_data:
+                #    packet_list.append(packet.get_raw_packet().hex())
+
+
+                '''
                 with open(file, 'rb') as file:
                     scanner = FileScanner(file)
                     for block in scanner:
@@ -58,18 +73,22 @@ def reader_function(path):
 
                             if hasattr(block, 'timestamp'):
                                 timestamp_list.append(block.timestamp)
+                '''
 
-                i=0
+                j=0
+                print(len(file_data))
                 packet_array = []
-                bar = progressbar.ProgressBar(max_value=len(packet_list))
-                for packet in packet_list:
-                    packet_array.append(Packet(get_image_source_ip(packet),
-                                               timestamp_list[i],
-                                               row_splitter(packet),
-                                               len(packet),
-                                               i))
-                    i+=1
-                    bar.update(i)
+                bar = progressbar.ProgressBar(max_value=i)
+                for packet in file_data:
+                    if 'UDP' in packet:
+                        packet_array.append(Packet(packet.ip.src,
+                                                packet.sniff_time,
+                                                row_splitter(packet.get_raw_packet().hex()),
+                                                packet.udp.length,
+                                                packet.number))
+                        
+                    j+=1
+                    bar.update(j)
 
                 packet_array = np.array(packet_array)
 
@@ -123,10 +142,10 @@ def reader_function(path):
 
                     i=0
                     telescope_image_list = []
-                    image_median = np.median(quabo_image_compiler(processed_packet_list[0][int(np.min(board_frame_count)/2)].data,
-                                                                processed_packet_list[1][int(np.min(board_frame_count)/2)].data,
-                                                                processed_packet_list[2][int(np.min(board_frame_count)/2)].data,
-                                                                processed_packet_list[3][int(np.min(board_frame_count)/2)].data))
+                    #image_median = np.median(quabo_image_compiler(processed_packet_list[0][int(np.min(board_frame_count)/2)].data,
+                    #                                            processed_packet_list[1][int(np.min(board_frame_count)/2)].data,
+                    #                                            processed_packet_list[2][int(np.min(board_frame_count)/2)].data,
+                    #                                            processed_packet_list[3][int(np.min(board_frame_count)/2)].data))
                     
                     #image_median_q1 = processed_packet_list[0][int(np.min(board_frame_count)/2)].data
 
