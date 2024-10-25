@@ -1,9 +1,7 @@
 print('\nWelcome to PyNOSETI!\n')
-print('1: Playback\n',
-      '    Options:\n',
-      '     -Generates an .mp4 file for each telescope within each .pcapng file located within the provided directory.\n',
-      '     -Select one telescope from one file to generate an .mp4 file for.\n')
-print('2: Analyzer\n   -Produces a .csv file documenting transient centroids recognized in processed data.\n')
+print('1: Playback Options:\n',
+      '     -Generates an .mp4 file for each telescope within each .pcapng file located within the provided directory.')
+print('2: Analyzer\n   -Produces a .csv file documenting transient centroids recognized in processed data.')
 print('3: Preprocess a directory of .pcapng files.')
 print('4: Perform all operations listed above.\n')
 option = int(input('Enter the integer corresponding to the action you would like to do: '))
@@ -12,8 +10,8 @@ import os
 import time
 import numpy as np
 from functions import *
-from reader_copy import reader_function
-from playback import playback_function
+from reader import reader_function
+from playback_copy import playback_function
 from analyzer import analyzer_function
 
 #start_time = time.time()
@@ -24,7 +22,7 @@ if option == 1:
     path = path.replace('\\', '/')
     path = path.replace('"', '')
     #path = '/home/brett/Data_for_pynoseti'
-    path = str(path)+'/pynoseti'
+    #path = str(path)+'/pynoseti'
 
     if os.path.isdir(path):
         
@@ -35,7 +33,7 @@ if option == 1:
         print('\nPreprocessed file directory recognized. Advancing to video file generation.')
 
         if telescope_choice != '':
-            print('test')
+            
             choice = int(telescope_choice)-1
             with os.scandir(path) as files:
                 file_count = 1
@@ -52,7 +50,7 @@ if option == 1:
                     if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
                         playback_function(file, telescope_choice, file_count)
                         file_count+=1
-                        print('test')
+                        #print('test')
 
 
     else:
@@ -62,11 +60,14 @@ if option == 1:
                             'Enter the integer corresponding to one of the telescopes: ')
         print('')
         
+        #os.mkdir(str(path)+'/pynoseti')
+        print('Target directory created for selected files at '+str(path)+'/panoseti\n')
+        
         reader_function(path)
         
         if telescope_choice != '':
             choice = int(telescope_choice)-1
-            with os.scandir(path) as files:
+            with os.scandir(path+str('/pynoseti')) as files:
                 file_count = 0
                 for file in files:
                     if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
@@ -75,6 +76,7 @@ if option == 1:
                         choice += 1
 
         elif telescope_choice == '':
+            print(path)
             with os.scandir(path) as files:
                 file_count = 1
                 for file in files:
@@ -99,7 +101,7 @@ elif option == 3:
     path = path.replace('\\', '/')
     path = path.replace('"', '')
 
-    path = '/home/brett/Data_for_pynoseti/ph_plane'
+    path = '/home/brettons/Ubuntu/Data_for_pynoseti/ph_2'
     reader_function(path)
     print('Preprocessing of file directory complete!\n')
 
@@ -134,6 +136,10 @@ elif option == 4:
                         playback_function(file, telescope_choice)
     else:
         print('\nPreprocessed file directory not recognized. Generating file directory...')
+        
+        os.mkdir(str(path)+'/pynoseti')
+        print('Target directory created for selected files at '+str(path)+'/panoseti\n')
+        
         reader_function(path)
 
         telescope_choice = input('Which telescope would you like to playback data for?\n'
@@ -164,4 +170,4 @@ elif option == 4:
 
 
 #end_time = time.time()
-print('Reduction completed in '+str(end_time-start_time)+' seconds!')
+#print('Reduction completed in '+str(end_time-start_time)+' seconds!')

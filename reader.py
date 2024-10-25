@@ -11,8 +11,8 @@ def reader_function(path):
     from pcapng.blocks import EnhancedPacket
 
     #path = "/home/brett/Data_for_pynoseti"
-    os.mkdir(str(path)+'/pynoseti')
-    print('Target directory created for selected files at '+str(path)+'/panoseti\n')
+    
+    
 
     with os.scandir(path) as files:
         file_count = 0
@@ -142,7 +142,7 @@ def reader_function(path):
                                                                 processed_packet_list[0][i].data,
                                                                 processed_packet_list[1][i].data,
                                                                 processed_packet_list[2][i].data,
-                                                                processed_packet_list[3][i].data),#/image_median,
+                                                                processed_packet_list[3][i].data)/image_median,
                                                             processed_packet_list[0][i].timestamp,
                                                             telescope.dome))
                         i+=1

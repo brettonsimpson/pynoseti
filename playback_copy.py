@@ -36,28 +36,39 @@ def playback_function(file, choice, file_count):
 
     elif telescope_choice == '':
         
-        
+        #print(path)
         j=0
         print('\nRendering movie files for all telescopes...')
         bar = progressbar.ProgressBar(max_value=len(array_image_list))
 
         bar.update(j)
-        for telescope in array_image_list:
                 
-            fig, ax = plt.subplots()
+        fig, (ax1, ax2, ax3) = plt.subplots(1,3)
+        
+        for ax in [ax1, ax2, ax3]:
             im = ax.imshow(array_image_list[j][0].data, cmap='viridis', vmin=0)
             cbar = fig.colorbar(im, ax=ax, orientation='vertical')
             title = ax.set_title('Frame Time: '+convert_unix_time(array_image_list[j][0].timestamp), loc='left')
             timestamp = ax.text(-0.5, 33, 'Frame 0 of '+str(len(array_image_list[j])))
             ax.set_axis_off()
-
-            def animate(i):
-                im.set_array(array_image_list[j][i].data)
-                ax.set_title('Frame Time: '+convert_unix_time(array_image_list[j][i].timestamp), loc='left')
-                timestamp.set_text(f'Frame {i} of '+str(len(array_image_list[j])))
-                return [im, ax]
-
-            animation_test = animation.FuncAnimation(fig, animate, frames=len(array_image_list[j]), interval=100, blit=True)
-            animation_test.save(f'telescope_{j}_movie_{file_count}.mp4', writer='ffmpeg', fps=30)
             j+=1
-            bar.update(j)
+            
+        #ax1.plot()
+        #plt.show()
+        
+        j=0
+        
+        def animate(i):
+            im.set_array(array_image_list[j][i].data)
+            ax.set_title('Frame Time: '+convert_unix_time(array_image_list[j][i].timestamp), loc='left')
+            timestamp.set_text(f'Frame {i} of '+str(len(array_image_list[j])))
+            return [im, ax]
+
+        k=0
+        for ax in [ax1, ax2, ax3]:
+            animation_test = animation.FuncAnimation(fig, animate, frames=len(array_image_list[k]), interval=100, blit=False)
+            animation_test.save(f'telescope_{k}_movie_{file_count}.mp4', writer='ffmpeg', fps=30)
+            print('animation printed!')
+            k+=1
+            #bar.update(j)
+        

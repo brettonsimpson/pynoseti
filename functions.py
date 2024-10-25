@@ -151,7 +151,11 @@ def convert_16bit_binary_to_integer(number):
         integer += (int(element)*(2**i))
         i -= 1
     
-    return integer
+    if integer >= 32768:
+        return 0
+    
+    else: 
+        return integer
 
 def concatenate_streams_and_convert_to_integer(packet):
     
