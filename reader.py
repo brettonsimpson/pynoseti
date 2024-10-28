@@ -9,11 +9,8 @@ def reader_function(path):
     import numpy as np
     from pcapng import FileScanner
     from pcapng.blocks import EnhancedPacket
-
-    #path = "/home/brett/Data_for_pynoseti"
     
-    
-
+    os.mkdir(str(path)+'/pynoseti')
     with os.scandir(path) as files:
         file_count = 0
         for file in files:
@@ -47,15 +44,7 @@ def reader_function(path):
                     scanner = FileScanner(file)
                     for block in scanner:
                         if isinstance(block, pcapng.blocks.EnhancedPacket):
-                            #print(len(block.packet_data.hex()))
-                            # Checks, while iterating over each block, if it is of the EnchancedPacket data type. If so,
-                            # its hexadecimal packet data is stored in 'packet_array'.
-
-                            #if len(block.packet_data.hex()) > 75:
-
                             packet_list.append(block.packet_data.hex())
-                            #print(len(block.packet_data.hex()))
-
                             if hasattr(block, 'timestamp'):
                                 timestamp_list.append(block.timestamp)
 
@@ -70,7 +59,6 @@ def reader_function(path):
                                                i))
                     i+=1
                     bar.update(i)
-
                 packet_array = np.array(packet_array)
 
                 with open('config.json', 'r') as file:
@@ -87,12 +75,6 @@ def reader_function(path):
                     for address in telescope.quabo_addresses:
                         if address not in quabo_address_list:
                             quabo_address_list.append(address)
-
-
-
-                #class Set():
-                #    def __init__(self, dataset):
-                #        self.dataset = dataset
 
                 array_image_list = []
                 for telescope in telescope_list:
@@ -123,38 +105,43 @@ def reader_function(path):
 
                     i=0
                     telescope_image_list = []
-                    image_median = np.median(quabo_image_compiler(processed_packet_list[0][int(np.min(board_frame_count)/2)].data,
-                                                                processed_packet_list[1][int(np.min(board_frame_count)/2)].data,
-                                                                processed_packet_list[2][int(np.min(board_frame_count)/2)].data,
-                                                                processed_packet_list[3][int(np.min(board_frame_count)/2)].data))
-                    
-                    #image_median_q1 = processed_packet_list[0][int(np.min(board_frame_count)/2)].data
-
-                    #image_median_q2 = processed_packet_list[1][int(np.min(board_frame_count)/2)].data
-
-                    #image_median_q3 = processed_packet_list[2][int(np.min(board_frame_count)/2)].data
-
-                    #image_median_q4 = processed_packet_list[3][int(np.min(board_frame_count)/2)].data
-
-                    
                     for element in range(np.min(board_frame_count)):
                         telescope_image_list.append(Image(quabo_image_compiler(
                                                                 processed_packet_list[0][i].data,
                                                                 processed_packet_list[1][i].data,
                                                                 processed_packet_list[2][i].data,
-                                                                processed_packet_list[3][i].data)/image_median,
+                                                                processed_packet_list[3][i].data),
                                                             processed_packet_list[0][i].timestamp,
                                                             telescope.dome))
                         i+=1
 
+                    if 'Ima_onsky' in file_name:
+
+                        empty_median_frame = np.empty((32,32), dtype=object)
+                        for i in range(empty_median_frame.shape[0]):
+                            for j in range(empty_median_frame.shape[1]):
+                                empty_median_frame[i][j] = []
+
+                        for frame in telescope_image_list:
+                            i=0
+                            for row in frame.data:
+                                j=0
+                                for pixel in row:
+                                    empty_median_frame[i][j].append(pixel)
+                                    j+=1
+                                i+=1
+
+                        print(empty_median_frame)
+                        print(len(empty_median_frame[0][0]))
+
                     array_image_list.append(telescope_image_list)
 
-                save_directory = os.path.join(str(path)+'/pynoseti', 'pynoseti_'+file_name+str(file_count))
+                
 
+
+                save_directory = os.path.join(str(path)+'/pynoseti', 'pynoseti_'+file_name+str(file_count))
                 np.save(save_directory, np.array(array_image_list, dtype=object))
 
                 file.close()
                 file_number += 1
                 print('\nComplete!\n')
-
-    #return array_image_list

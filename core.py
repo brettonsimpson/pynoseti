@@ -1,9 +1,9 @@
 print('\nWelcome to PyNOSETI!\n')
-print('1: Playback Options:\n',
+print('1: Playback Options: [Under Development]\n',
       '     -Generates an .mp4 file for each telescope within each .pcapng file located within the provided directory.')
-print('2: Analyzer\n   -Produces a .csv file documenting transient centroids recognized in processed data.')
+print('2: Analyzer [Under Development]\n   -Produces a .csv file documenting transient centroids recognized in processed data.')
 print('3: Preprocess a directory of .pcapng files.')
-print('4: Perform all operations listed above.\n')
+print('4: Perform all operations listed above. [Untested]\n')
 option = int(input('Enter the integer corresponding to the action you would like to do: '))
 
 import os
@@ -11,7 +11,7 @@ import time
 import numpy as np
 from functions import *
 from reader import reader_function
-from playback_copy import playback_function
+from playback import playback_function
 from analyzer import analyzer_function
 
 #start_time = time.time()
@@ -21,7 +21,7 @@ if option == 1:
     path = input('Please enter a directory for files you want to process: ')
     path = path.replace('\\', '/')
     path = path.replace('"', '')
-    #path = '/home/brett/Data_for_pynoseti'
+    #path = '/home/brett/Data_for_pynoseti/ph_2'
     #path = str(path)+'/pynoseti'
 
     if os.path.isdir(path):
@@ -32,6 +32,8 @@ if option == 1:
         
         print('\nPreprocessed file directory recognized. Advancing to video file generation.')
 
+        path = str(path)+'/pynoseti'
+
         if telescope_choice != '':
             
             choice = int(telescope_choice)-1
@@ -40,7 +42,7 @@ if option == 1:
                 for file in files:
                     if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
                         if file_count == choice:
-                            playback_function(file, telescope_choice)
+                            playback_function(path, file, telescope_choice, file_count)
                         choice += 1
 
         elif telescope_choice == '':
@@ -48,8 +50,9 @@ if option == 1:
                 file_count = 1
                 for file in files:
                     if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
-                        playback_function(file, telescope_choice, file_count)
                         file_count+=1
+                        playback_function(path, file, telescope_choice, file_count)
+                        
                         #print('test')
 
 
@@ -101,7 +104,7 @@ elif option == 3:
     path = path.replace('\\', '/')
     path = path.replace('"', '')
 
-    path = '/home/brettons/Ubuntu/Data_for_pynoseti/ph_2'
+    #path = '/home/brett/Data_for_pynoseti/median_image_script_testing'
     reader_function(path)
     print('Preprocessing of file directory complete!\n')
 

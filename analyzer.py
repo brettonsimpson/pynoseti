@@ -8,10 +8,6 @@ from scipy import ndimage
 import matplotlib.pyplot as plt
 
 def analyzer_function(path):
-    #path = input('Please enter the file path for the PANOSETI recording you would like to analyze: ')
-    #path = '/home/brett\Data_for_pynoseti\pynoseti'
-    #path = '/home/brett/Data_for_pynoseti/panoseti'
-
     events = {
         'Pixel Locations': [],
         'Peak Count': [],

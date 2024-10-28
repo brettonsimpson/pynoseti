@@ -36,7 +36,7 @@ def playback_function(file, choice, file_count):
 
     elif telescope_choice == '':
         
-        
+        animation_list=[]
         j=0
         print('\nRendering movie files for all telescopes...')
         bar = progressbar.ProgressBar(max_value=len(array_image_list))
@@ -60,4 +60,5 @@ def playback_function(file, choice, file_count):
             animation_test = animation.FuncAnimation(fig, animate, frames=len(array_image_list[j]), interval=100, blit=True)
             animation_test.save(f'telescope_{j}_movie_{file_count}.mp4', writer='ffmpeg', fps=30)
             j+=1
+            animation_list.append(animation_test)
             bar.update(j)
