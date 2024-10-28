@@ -1,10 +1,25 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import pcapng
-from pcapng import FileScanner
-import os
-from IPython.display import display, clear_output
-import time
+from scipy.ndimage import label, center_of_mass
+from datetime import datetime
+
+class Quabo:
+    def __init__(self, address, data):
+        self.address = address
+        self.data = data
+
+class Telescope:
+    def __init__(self, name, dome, quabo_addresses, data):
+        self.name = name
+        self.dome = dome
+        self.quabo_addresses = quabo_addresses
+        self.data = data
+
+class Image:
+    def __init__(self, data, timestamp, dome):
+        self.data = data
+        self.timestamp = timestamp
+        self.dome = dome
 
 def separated_hex_values(packet):
     '''
@@ -115,20 +130,16 @@ def concatenate_pixel_data_streams(packet):
 
         i += 1
     i = 0
-    
-    #even_array = even_array[::-1]
-    #odd_array = odd_array[::-1]
 
     for element in even_array:
         combined_array.append(odd_array[i][::-1] + even_array[i][::-1])
-        #  ** * * * ** * * Flipping the arrays and concatenating them in accordance with the Quabo packet interface information ******* * ** * ** * *
+        # Flipping the arrays and concatenating them to align with the Quabo packet interface requirements.
 
         i += 1
     
     return combined_array
 
 def convert_16bit_binary_to_integer(number):
-    
     i = 15
     integer = 0
     
@@ -136,10 +147,13 @@ def convert_16bit_binary_to_integer(number):
         integer += (int(element)*(2**i))
         i -= 1
     
-    return integer
+    if integer >= 32768:
+        return 0
+    
+    else: 
+        return integer
 
 def concatenate_streams_and_convert_to_integer(packet):
-    
     concatenated_array = []
     for element in concatenate_pixel_data_streams(packet):
         concatenated_array.append(convert_16bit_binary_to_integer(element))
@@ -147,7 +161,6 @@ def concatenate_streams_and_convert_to_integer(packet):
     return concatenated_array
 
 def row_splitter(packet):
-    
     image = []
     full_array = []
     counter = 0
@@ -171,14 +184,19 @@ def row_splitter(packet):
 #creates a 2D array with 16 rows of 16 elements (pixel data to be plotted)
 
 def quabo_image_compiler(quabo_1, quabo_2, quabo_3, quabo_4):
-
     final_quadrant_1 = np.kron(np.array([[0,1],[0,0]]), quabo_1)
     final_quadrant_2 = np.kron(np.array([[0,0],[0,1]]), np.rot90(quabo_2, -1))
     final_quadrant_3 = np.kron(np.array([[0,0],[1,0]]), np.rot90(quabo_3, -2))
-    final_quadrant_4 = np.kron(np.array([[1,0],[0,0]]), np.rot90(quabo_4, -4))
+    final_quadrant_4 = np.kron(np.array([[1,0],[0,0]]), np.rot90(quabo_4, -3))
 
     return final_quadrant_1+final_quadrant_2+final_quadrant_3+final_quadrant_4
 
-def get_image_source_ip(packet):
 
+def get_image_source_ip(packet):
     return str(decimal_converted_packet(packet)[26])+'.'+str(decimal_converted_packet(packet)[27])+'.'+str(decimal_converted_packet(packet)[28])+'.'+str(decimal_converted_packet(packet)[29])
+
+def convert_unix_time(time):
+    date_object = datetime.fromtimestamp(time)
+    output = date_object.strftime('%Y-%m-%d %H:%M:%S') +':'+ str(date_object.microsecond)
+
+    return output
