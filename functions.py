@@ -16,10 +16,16 @@ class Telescope:
         self.data = data
 
 class Image:
-    def __init__(self, data, timestamp, dome):
+    def __init__(self, data, timestamp):
         self.data = data
         self.timestamp = timestamp
-        self.dome = dome
+
+class Sequence:
+    def __init__(self, data, median_frame, telescope, file_name):
+        self.data = data
+        self.median_frame = median_frame
+        self.telescope = telescope
+        self.file_name = file_name
 
 def separated_hex_values(packet):
     '''

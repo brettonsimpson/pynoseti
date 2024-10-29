@@ -21,7 +21,7 @@ if option == 1:
     path = input('Please enter a directory for files you want to process: ')
     path = path.replace('\\', '/')
     path = path.replace('"', '')
-    #path = '/home/brett/Data_for_pynoseti/ph_2'
+    path = '/home/brett/Data_for_pynoseti/median_image_script_testing'
     #path = str(path)+'/pynoseti'
 
     if os.path.isdir(path):
@@ -85,7 +85,7 @@ if option == 1:
                 for file in files:
                     file_count += 1
                     if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
-                        playback_function(file, telescope_choice, file_count)
+                        playback_function(path, file, telescope_choice, file_count)
 
 elif option == 2:
     path = input('\nPlease provide the directory of the files you would like to generate an event log for: ')
@@ -104,7 +104,7 @@ elif option == 3:
     path = path.replace('\\', '/')
     path = path.replace('"', '')
 
-    #path = '/home/brett/Data_for_pynoseti/median_image_script_testing'
+    path = '/home/brett/Data_for_pynoseti/median_image_script_testing'
     reader_function(path)
     print('Preprocessing of file directory complete!\n')
 

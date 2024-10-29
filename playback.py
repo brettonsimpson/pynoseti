@@ -1,5 +1,5 @@
 from functions import *
-def playback_function(file, choice, file_count):
+def playback_function(path, file, choice, file_count):
 
     import os
     import numpy as np

@@ -100,8 +100,6 @@ def reader_function(path):
                                          len(processed_packet_list[1]),
                                          len(processed_packet_list[2]),
                                          len(processed_packet_list[3])]
-                    # Measures the length of the processed packet lists for each quabo so 
-                    # that it can be divided in half and a median be retrieved from the set.
 
                     i=0
                     telescope_image_list = []
@@ -111,30 +109,28 @@ def reader_function(path):
                                                                 processed_packet_list[1][i].data,
                                                                 processed_packet_list[2][i].data,
                                                                 processed_packet_list[3][i].data),
-                                                            processed_packet_list[0][i].timestamp,
-                                                            telescope.dome))
+                                                            processed_packet_list[0][i].timestamp))
                         i+=1
 
+
+                    
                     if 'Ima_onsky' in file_name:
-
-                        empty_median_frame = np.empty((32,32), dtype=object)
-                        for i in range(empty_median_frame.shape[0]):
-                            for j in range(empty_median_frame.shape[1]):
-                                empty_median_frame[i][j] = []
-
+                        
+                        frame_sequence = []
                         for frame in telescope_image_list:
-                            i=0
-                            for row in frame.data:
-                                j=0
-                                for pixel in row:
-                                    empty_median_frame[i][j].append(pixel)
-                                    j+=1
-                                i+=1
+                            frame_sequence.append(frame.data)
+                        median_frame = np.median(np.stack(np.array(frame_sequence)), axis=0)
+                        
+                        data_sequence = []
+                        for image in telescope_image_list:
+                            data_sequence.append(image)
 
-                        print(empty_median_frame)
-                        print(len(empty_median_frame[0][0]))
-
-                    array_image_list.append(telescope_image_list)
+                        telescope_frame_sequence = Sequence(data_sequence,
+                                                            median_frame,
+                                                            telescope.dome,
+                                                            file_name)
+                        
+                    array_image_list.append(telescope_frame_sequence)
 
                 
 
