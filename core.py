@@ -22,6 +22,7 @@ if option == 1:
     path = path.replace('\\', '/')
     path = path.replace('"', '')
     path = '/home/brett/Data_for_pynoseti/median_image_script_testing'
+    path = '/home/brett/Data_for_pynoseti/ph'
     #path = str(path)+'/pynoseti'
 
     if os.path.isdir(path):
@@ -42,7 +43,7 @@ if option == 1:
                 for file in files:
                     if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
                         if file_count == choice:
-                            playback_function(file, telescope_choice, file_count)
+                            playback_function(file, telescope_choice, file_count, file.name)
                         choice += 1
 
         elif telescope_choice == '':
@@ -51,7 +52,7 @@ if option == 1:
                 for file in files:
                     if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
                         file_count+=1
-                        playback_function(file, telescope_choice, file_count)
+                        playback_function(file, telescope_choice, file_count, file.name)
                         
                         #print('test')
 
@@ -105,6 +106,7 @@ elif option == 3:
     path = path.replace('"', '')
 
     path = '/home/brett/Data_for_pynoseti/median_image_script_testing'
+    path = '/home/brett/Data_for_pynoseti/ph'
     reader_function(path)
     print('Preprocessing of file directory complete!\n')
 

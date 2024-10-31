@@ -118,11 +118,6 @@ def reader_function(path):
                         for frame in telescope_image_list:
                             frame_sequence.append(frame.data)
                         median_frame = np.median(np.stack(np.array(frame_sequence)), axis=0)
-
-                        #for frame in telescope_image_list:
-                        #    median_subtracted_image_list.append(Image(np.clip(frame.data-median_frame, a_min=0, a_max=None),
-                        #                                              frame.timestamp,
-                        #                                              i))
                         
                         array_data_sequence_list = []
                         data_sequence = Sequence(telescope_image_list, median_frame, str(telescope.dome), str(file_name))
@@ -130,8 +125,10 @@ def reader_function(path):
                         array_image_list = array_data_sequence_list
 
                     else:
-                        array_image_list.append(telescope_image_list)
-
+                        array_data_sequence_list = []
+                        data_sequence = Sequence(telescope_image_list, None, str(telescope.dome), str(file_name))
+                        array_data_sequence_list.append(data_sequence)
+                        array_image_list = array_data_sequence_list
                 
                 save_directory = os.path.join(str(path)+'/pynoseti', 'pynoseti_'+file_name+str(file_count))
                 np.save(save_directory, np.array(array_image_list, dtype=object))
