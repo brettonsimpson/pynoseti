@@ -22,8 +22,8 @@ class Image:
         self.number = number
 
 class Sequence:
-    def __init__(self, data, median_frame, telescope, file_name):
-        self.data = data
+    def __init__(self, sequence, median_frame, telescope, file_name):
+        self.sequence = sequence
         self.median_frame = median_frame
         self.telescope = telescope
         self.file_name = file_name

@@ -42,7 +42,7 @@ if option == 1:
                 for file in files:
                     if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
                         if file_count == choice:
-                            playback_function(path, file, telescope_choice, file_count)
+                            playback_function(file, telescope_choice, file_count)
                         choice += 1
 
         elif telescope_choice == '':
@@ -51,7 +51,7 @@ if option == 1:
                 for file in files:
                     if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
                         file_count+=1
-                        playback_function(path, file, telescope_choice, file_count)
+                        playback_function(file, telescope_choice, file_count)
                         
                         #print('test')
 

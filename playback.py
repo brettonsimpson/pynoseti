@@ -1,5 +1,5 @@
 from functions import *
-def playback_function(path, file, choice, file_count):
+def playback_function(file, choice, file_count):
 
     import os
     import numpy as np
@@ -28,7 +28,7 @@ def playback_function(path, file, choice, file_count):
             timestamp.set_text(f'Frame {i} of '+str(len(array_image_list[telescope_choice])))
             return [im, ax]
 
-        animation_test = animation.FuncAnimation(fig, animate, frames=len(array_image_list[telescope_choice]), interval=100, blit=True)
+        animation_test = animation.FuncAnimation(fig, animate, frames=len(array_image_list[telescope_choice]), interval=100, blit=False)
 
         print('\nRendering movie file...\n')
         animation_test.save('test_movie.mp4', writer='ffmpeg', fps=60)
@@ -45,19 +45,19 @@ def playback_function(path, file, choice, file_count):
         for telescope in array_image_list:
                 
             fig, ax = plt.subplots()
-            im = ax.imshow(array_image_list[j][0].data, cmap='viridis', vmin=0)
+            im = ax.imshow(array_image_list[j].sequence[0].data, cmap='viridis', vmin=0)
             cbar = fig.colorbar(im, ax=ax, orientation='vertical')
-            title = ax.set_title('Frame Time: '+convert_unix_time(array_image_list[j][0].timestamp), loc='left')
-            timestamp = ax.text(-0.5, 33, 'Frame 0 of '+str(len(array_image_list[j])))
+            title = ax.set_title('Frame Time: '+convert_unix_time(array_image_list[j].sequence[0].timestamp), loc='left')
+            frame_number = ax.text(-0.5, 33, 'Frame 0 of '+str(len(array_image_list[j].sequence)))
             ax.set_axis_off()
 
             def animate(i):
-                im.set_array(array_image_list[j][i].data)
-                ax.set_title('Frame Time: '+convert_unix_time(array_image_list[j][i].timestamp), loc='left')
-                timestamp.set_text(f'Frame {i} of '+str(len(array_image_list[j])))
+                im.set_array(array_image_list[j].sequence[i].data)
+                ax.set_title('Frame Time: '+convert_unix_time(array_image_list[j].sequence[i].timestamp), loc='left')
+                frame_number.set_text(f'Frame {i} of '+str(len(array_image_list[j].sequence)))
                 return [im, ax]
 
-            animation_test = animation.FuncAnimation(fig, animate, frames=len(array_image_list[j]), interval=100, blit=True)
+            animation_test = animation.FuncAnimation(fig, animate, frames=len(array_image_list[j].sequence), interval=100, blit=False)
             animation_test.save(f'telescope_{j}_movie_{file_count}.mp4', writer='ffmpeg', fps=30)
             j+=1
             animation_list.append(animation_test)
