@@ -16,9 +16,10 @@ class Telescope:
         self.data = data
 
 class Image:
-    def __init__(self, data, timestamp):
+    def __init__(self, data, timestamp, number):
         self.data = data
         self.timestamp = timestamp
+        self.number = number
 
 class Sequence:
     def __init__(self, data, median_frame, telescope, file_name):

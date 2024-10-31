@@ -109,11 +109,12 @@ def reader_function(path):
                                                                 processed_packet_list[1][i].data,
                                                                 processed_packet_list[2][i].data,
                                                                 processed_packet_list[3][i].data),
-                                                            processed_packet_list[0][i].timestamp))
+                                                            processed_packet_list[0][i].timestamp,
+                                                            i))
                         i+=1
 
 
-                    
+                    '''
                     if 'Ima_onsky' in file_name:
                         
                         frame_sequence = []
@@ -125,12 +126,14 @@ def reader_function(path):
                         for image in telescope_image_list:
                             data_sequence.append(image)
 
-                        telescope_frame_sequence = Sequence(data_sequence,
-                                                            median_frame,
-                                                            telescope.dome,
-                                                            file_name)
+                        #telescope_frame_sequence = Sequence(data_sequence,
+                        #                                    median_frame,
+                        #                                    telescope.dome,
+                        #                                    file_name)
+
+                    '''
                         
-                    array_image_list.append(telescope_frame_sequence)
+                    array_image_list.append(telescope_image_list)
 
                 
 
