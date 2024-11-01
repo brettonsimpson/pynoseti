@@ -10,7 +10,7 @@ import os
 import time
 import numpy as np
 from functions import *
-from reader import reader_function
+from reader_copy import reader_function
 from playback import playback_function
 from analyzer import analyzer_function
 
@@ -106,7 +106,7 @@ elif option == 3:
     path = path.replace('"', '')
 
     path = '/home/brett/Data_for_pynoseti/median_image_script_testing'
-    path = '/home/brett/Data_for_pynoseti/ph'
+    #path = '/home/brett/Data_for_pynoseti/ph'
     reader_function(path)
     print('Preprocessing of file directory complete!\n')
 
