@@ -10,11 +10,26 @@ from glom import glom
 #file3 = np.load('/home/brett/Data_for_pynoseti/median_image_script_testing/pynoseti/pynoseti_full_sequence_data_SEQUENCES.npy', allow_pickle=True)
 #file4 = np.load('/home/brett/Data_for_pynoseti/median_image_script_testing/pynoseti/pynoseti_full_sequence_data_FINAL_DATA.npy', allow_pickle=True)
 
-import multiprocessing
+import time
+start_time = time.time()
 
-num_cores = multiprocessing.cpu_count()
-print(f"Number of available cores: {num_cores}")
+from multiprocessing import Pool
 
+def your_function(item):
+    return item ** 2
+
+items = list(range(100000001))
+
+# Specify number of cores to use
+num_cores = 1
+
+with Pool(processes=num_cores) as pool:
+    results = pool.map(your_function, items)
+
+#print(results)
+
+end_time = time.time()
+print('Completed in '+str(end_time-start_time)+' seconds!')
 
 #print(type(file[0][0][0]))
 
