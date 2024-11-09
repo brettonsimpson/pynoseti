@@ -1,8 +1,11 @@
 print('\nWelcome to PyNOSETI!\n')
 print('1: Playback Options: [Under Development]\n',
-      '     -Generates an .mp4 file for each telescope within each .pcapng file located within the provided directory.')
-print('2: Analyzer [Under Development]\n   -Produces a .csv file documenting transient centroids recognized in processed data.')
-print('3: Preprocess a directory of .pcapng files.')
+      '     -Renders an .mp4 file that compiles the continuous playback data for each telescope.')
+print('2: Analyzer [Under Development]\n',
+      '     -Produces a .csv file cataloguing transient centroids recognized in processed data.')
+print('3: Preprocess a directory of .pcapng files.\n',
+      '     -Generate a file containing preprocessed observational data for all files within a directory.\n',
+      '     -WARNING: Requires disk space equal to approximately four times the size of .pcapng file directory.')
 print('4: Perform all operations listed above. [Untested]\n')
 option = int(input('Enter the integer corresponding to the action you would like to do: '))
 
@@ -22,7 +25,7 @@ if option == 1:
     path = path.replace('\\', '/')
     path = path.replace('"', '')
     path = '/home/brett/Data_for_pynoseti/median_image_script_testing'
-    path = '/home/brett/Data_for_pynoseti/ph'
+    #path = '/home/brett/Data_for_pynoseti/ph'
     #path = str(path)+'/pynoseti'
 
     if os.path.isdir(path):
@@ -37,14 +40,20 @@ if option == 1:
 
         if telescope_choice != '':
             
+            #'''
             choice = int(telescope_choice)-1
-            with os.scandir(path) as files:
+            with os.scandir(path) as directory:
                 file_count = 1
-                for file in files:
+                for file in directory:
                     if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
-                        if file_count == choice:
-                            playback_function(file, telescope_choice, file_count, file.name)
-                        choice += 1
+                        #if file_count == choice:
+                        playback_function(file, telescope_choice, file_count, file.name)
+                        #choice += 1
+            #'''
+            #choice = int(telescope_choice)-1
+            #with os.scandir(path) as files:
+
+
 
         elif telescope_choice == '':
             with os.scandir(path) as files:

@@ -22,11 +22,16 @@ class Image:
         self.number = number
 
 class Sequence:
-    def __init__(self, sequence, median_frame, telescope, file_name):
+    def __init__(self, sequence, median_data, telescope, file_name):
         self.sequence = sequence
-        self.median_frame = median_frame
+        self.median_data = median_data
         self.telescope = telescope
         self.file_name = file_name
+
+class Median:
+    def __init__(self, median_frame, frame_selection):
+        self.median_frame = median_frame
+        self.frame_selection = frame_selection
 
 def separated_hex_values(packet):
     '''

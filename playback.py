@@ -16,10 +16,10 @@ def playback_function(file, choice, file_count, file_name):
 
     if telescope_choice != '':
         telescope_choice = int(telescope_choice)-1
-
+        
         fig, ax = plt.subplots()
         if 'Ima_onsky' in file_name:
-            im = ax.imshow(np.clip(array_image_list[telescope_choice].sequence[0].data-array_image_list[telescope_choice].median_frame, a_min=0, a_max=1000), cmap='viridis', vmin=0)
+            im = ax.imshow(np.clip(array_image_list[telescope_choice].sequence[0].data-array_image_list[telescope_choice].median_data.median_frame, a_min=0, a_max=1000), cmap='viridis', vmin=0)
             cbar = fig.colorbar(im, ax=ax, orientation='vertical', label='Photoelectron Count')
             timestamp = ax.set_title(convert_unix_time(array_image_list[telescope_choice].sequence[0].timestamp), loc='left', y=-0.065)
             frame_number = ax.text(-0.5, 34.25, 'Frame 0 of '+str(len(array_image_list[telescope_choice].sequence)))
@@ -30,7 +30,7 @@ def playback_function(file, choice, file_count, file_name):
             ax.set_axis_off()
 
             def animate(i):
-                im.set_array(np.clip(array_image_list[telescope_choice].sequence[i].data-array_image_list[telescope_choice].median_frame, a_min=0, a_max=1000))
+                im.set_array(np.clip(array_image_list[telescope_choice].sequence[i].data-array_image_list[telescope_choice].median_data.median_frame, a_min=0, a_max=1000))
                 timestamp.set_title(convert_unix_time(array_image_list[telescope_choice].sequence[i].timestamp), loc='left', y=-0.065)
                 frame_number.set_text(f'Frame {i} of '+str(len(array_image_list[telescope_choice].sequence)))
                 return [im, ax]

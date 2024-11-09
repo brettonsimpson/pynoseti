@@ -112,23 +112,6 @@ def reader_function(path):
                                                             processed_packet_list[0][i].timestamp,
                                                             i))
                         i+=1
-                    
-                    if 'Ima_onsky' in file_name:
-                        frame_sequence = []
-                        for frame in telescope_image_list:
-                            frame_sequence.append(frame.data)
-                        median_frame = np.median(np.stack(np.array(frame_sequence)), axis=0)
-                        
-                        array_data_sequence_list = []
-                        data_sequence = Sequence(telescope_image_list, median_frame, str(telescope.dome), str(file_name))
-                        array_data_sequence_list.append(data_sequence)
-                        array_image_list = array_data_sequence_list
-
-                    else:
-                        array_data_sequence_list = []
-                        data_sequence = Sequence(telescope_image_list, None, str(telescope.dome), str(file_name))
-                        array_data_sequence_list.append(data_sequence)
-                        array_image_list = array_data_sequence_list
                 
                 save_directory = os.path.join(str(path)+'/pynoseti', 'pynoseti_'+file_name+str(file_count))
                 np.save(save_directory, np.array(array_image_list, dtype=object))
@@ -136,3 +119,46 @@ def reader_function(path):
                 file.close()
                 file_number += 1
                 print('\nComplete!\n')
+    
+    with os.scandir(path) as files:
+        file_number = 1
+        array_data_sequence_list = []
+        for file in files:
+            if file.is_file():
+                if 'Ima_onsky' in file_name:
+                    for telescope in file:
+                    
+                            
+                            
+                        
+                        frame_sequence = []
+                        for frame in telescope_image_list:
+                            frame_sequence.append(frame.data)
+                        median_frame = np.median(np.stack(np.array(frame_sequence)), axis=0)
+                        
+                        
+                        
+                        data_sequence = Sequence(telescope_image_list, median_frame, str(telescope.dome), str(file_name))
+                        
+                        for element in telescope_list:
+                            if element.name == data_sequence.dome:
+
+
+                                array_data_sequence_list.append(data_sequence)
+                                #array_image_list = array_data_sequence_list
+                                print(len(array_data_sequence_list))
+                                print(len(array_image_list))
+
+                    
+                    
+                    else:
+                        
+                        array_data_sequence_list = []
+                        data_sequence = Sequence(telescope_image_list, None, str(telescope.dome), str(file_name))
+                        array_data_sequence_list.append(data_sequence)
+                        array_image_list = array_data_sequence_list
+
+                file_number+=1 
+
+        save_directory = os.path.join(str(path)+'/pynoseti', 'pynoseti_full_data')
+        np.save(save_directory, np.array(array_data_sequence_list, dtype=object))
