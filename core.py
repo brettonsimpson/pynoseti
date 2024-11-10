@@ -1,3 +1,11 @@
+import os
+import time
+import numpy as np
+from functions import *
+from reader_copy import reader_function
+from playback_copy import playback_function
+from analyzer import analyzer_function
+
 print('\nWelcome to PyNOSETI!\n')
 print('1: Playback Options: [Under Development]\n',
       '     -Renders an .mp4 file that compiles the continuous playback data for each telescope.')
@@ -8,14 +16,6 @@ print('3: Preprocess a directory of .pcapng files.\n',
       '     -WARNING: Requires disk space equal to approximately four times the size of .pcapng file directory.')
 print('4: Perform all operations listed above. [Untested]\n')
 option = int(input('Enter the integer corresponding to the action you would like to do: '))
-
-import os
-import time
-import numpy as np
-from functions import *
-from reader_copy import reader_function
-from playback import playback_function
-from analyzer import analyzer_function
 
 #start_time = time.time()
 

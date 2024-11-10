@@ -165,10 +165,8 @@ def reader_function(path):
                     temp_complete_sequence.append(frame)
                     frame_number+=1
 
-                print(file)
-
                 frame_selection.append(frame_number)
-                temp_median_list.append(Median(file.median_data.median_frame, frame_selection))
+                temp_median_list.append(Median(file.median_data, frame_selection))
                 temp_telescope_identifier = file.telescope
                 temp_file_name = file.file_name
                 
