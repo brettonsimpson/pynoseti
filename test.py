@@ -10,6 +10,9 @@ from pprint import pprint
 #file3 = np.load('/home/brett/Data_for_pynoseti/median_image_script_testing/pynoseti/pynoseti_full_sequence_data_SEQUENCES.npy', allow_pickle=True)
 #file4 = np.load('/home/brett/Data_for_pynoseti/median_image_script_testing/pynoseti/pynoseti_full_sequence_data_FINAL_DATA_Ima_onsky.npy', allow_pickle=True)
 
+
+#print(int(6/4))
+
 '''
 import time
 start_time = time.time()
@@ -83,42 +86,6 @@ print(file4[0][0],'\n-------------\n')
 print(file4[0][0].file_name,'\n-------------\n')
 print(file4[0][1].file_name,'\n-------------\n')
 '''
-
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-
-# Number of subplots
-num_images = 4  # Adjust the number of subplots as needed
-
-# Create separate image sequences for each subplot
-# Here, we generate 100 frames of random 10x10 images for each subplot
-image_sequences = [np.random.rand(100, 10, 10) for _ in range(num_images)]
-
-# Create figure and subplots
-fig, axes = plt.subplots(1, num_images, figsize=(4 * num_images, 4))
-axes = np.atleast_1d(axes)  # Ensures axes is always iterable
-
-# Initialize imshow objects for each subplot with the first frame of each sequence
-ims = [ax.imshow(image_sequences[i][0], animated=True) for i, ax in enumerate(axes)]
-
-# Update function for the animation
-def update(frame):
-    for i, im in enumerate(ims):
-        # Update each imshow object with its corresponding image sequence
-        im.set_array(image_sequences[i][frame])
-    return ims
-
-# Create the animation
-ani = FuncAnimation(fig, update, frames=image_sequences[0].shape[0], blit=True)
-
-plt.tight_layout()
-plt.show()
-
-
-
-
-
 #i=0
 #for element in file2:
 #    print(file2[i][0][0])

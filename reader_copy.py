@@ -9,6 +9,9 @@ def reader_function(path):
     import numpy as np
     from pcapng import FileScanner
     from pcapng.blocks import EnhancedPacket
+    from multiprocessing import Pool
+
+    processes = int(os.cpu_count()/2)
     
     os.mkdir(str(path)+'/pynoseti')
     with os.scandir(path) as files:
@@ -35,14 +38,6 @@ def reader_function(path):
 
                 print(f'Processing file {file_number} of {file_count}...')
 
-                class Packet:
-                    def __init__(self, source_ip, timestamp, data, length, number):
-                        self.source_ip = source_ip
-                        self.timestamp = timestamp
-                        self.data = data
-                        self.length = length
-                        self.number = number
-
                 with open(file, 'rb') as file:
                     scanner = FileScanner(file)
                     for block in scanner:
@@ -54,15 +49,24 @@ def reader_function(path):
                 i=0
                 packet_array = []
                 bar = progressbar.ProgressBar(max_value=len(packet_list))
+
+
+                #########################################
+                #packet_maker_parameters = [packet, timestamp_list, i]
+                #with Pool(processes) as pool:
+                #    packet_array = pool.starmap(packet_maker)
+                #########################################
+
+                
                 for packet in packet_list:
-                    packet_array.append(Packet(get_image_source_ip(packet),
-                                               timestamp_list[i],
-                                               row_splitter(packet),
-                                               len(packet),
-                                               i))
+                    packet_array.append(packet_maker(packet, timestamp_list, i))
                     i+=1
                     bar.update(i)
+
+                
+
                 packet_array = np.array(packet_array)
+                
 
                 with open('config.json', 'r') as file:
                     config = json.load(file)
@@ -122,7 +126,13 @@ def reader_function(path):
                     for frame in telescope_image_list:
                         median_sequence.append(frame.data)
                     median_frame = np.median(np.stack(np.array(median_sequence)), axis=0)
-                    array_image_list[j].append(Sequence(telescope_image_list, median_frame, telescope.dome, file_name))
+
+                    median_subtracted_telescope_image_list = []
+                    for frame in telescope_image_list:
+                        median_subtracted_telescope_image_list.append(Image(frame.data-median_frame,frame.timestamp,frame.number))
+
+
+                    array_image_list[j].append(Sequence(median_subtracted_telescope_image_list, median_frame, telescope.dome, file_name))
                     j+=1
 
                 array_data_sequence_list.append(array_image_list)
@@ -165,6 +175,7 @@ def reader_function(path):
                     temp_complete_sequence.append(frame)
                     frame_number+=1
 
+                temp_complete_sequence = sorted(temp_complete_sequence, key=lambda obj: obj.timestamp)
                 frame_selection.append(frame_number)
                 temp_median_list.append(Median(file.median_data, frame_selection))
                 temp_telescope_identifier = file.telescope
