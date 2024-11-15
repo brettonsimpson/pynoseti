@@ -78,7 +78,6 @@ def playback_function(file, choice, file_count, file_name, path):
 
         if 'Ima_onsky' in file_name:
 
-            
 
             ims = [ax.imshow(array_image_list[i].sequence[0].data, animated=True, vmin=0) for i, ax in enumerate(axes)]
 

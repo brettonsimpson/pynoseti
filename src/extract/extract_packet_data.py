@@ -1,48 +1,3 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.ndimage import label, center_of_mass
-from datetime import datetime
-import tkinter as tk
-from tkinter import filedialog
-
-class Quabo:
-    def __init__(self, address, data):
-        self.address = address
-        self.data = data
-
-class Packet:
-    def __init__(self, source_ip, timestamp, data, length, number):
-        self.source_ip = source_ip
-        self.timestamp = timestamp
-        self.data = data
-        self.length = length
-        self.number = number
-
-class Telescope:
-    def __init__(self, name, dome, quabo_addresses, data):
-        self.name = name
-        self.dome = dome
-        self.quabo_addresses = quabo_addresses
-        self.data = data
-
-class Image:
-    def __init__(self, data, timestamp, number):
-        self.data = data
-        self.timestamp = timestamp
-        self.number = number
-
-class Sequence:
-    def __init__(self, sequence, median_data, telescope, file_name):
-        self.sequence = sequence
-        self.median_data = median_data
-        self.telescope = telescope
-        self.file_name = file_name
-
-class Median:
-    def __init__(self, median_frame, frame_selection):
-        self.median_frame = median_frame
-        self.frame_selection = frame_selection
-
 def separated_hex_values(packet):
     '''
     This function reads in a list of hexadecimal packet data, without spaces between each pair of characters,
@@ -203,33 +158,7 @@ def row_splitter(packet):
             
     return image
 
-#creates a 2D array with 16 rows of 16 elements (pixel data to be plotted)
-
-def quabo_image_compiler(quabo_1, quabo_2, quabo_3, quabo_4):
-    quabo_2 = np.rot90(quabo_2, -1)
-    quabo_3 = np.rot90(quabo_3, -2)
-    quabo_4 = np.rot90(quabo_4, -3)
-    final_quadrant_1 = np.kron(np.array([[0,1],[0,0]]), quabo_3)
-    final_quadrant_2 = np.kron(np.array([[0,0],[0,1]]), quabo_4)
-    final_quadrant_3 = np.kron(np.array([[0,0],[1,0]]), quabo_1)
-    final_quadrant_4 = np.kron(np.array([[1,0],[0,0]]), quabo_2)
-    return final_quadrant_1+final_quadrant_2+final_quadrant_3+final_quadrant_4
-
-
 def get_image_source_ip(packet):
-    return str(decimal_converted_packet(packet)[26])+'.'+str(decimal_converted_packet(packet)[27])+'.'+str(decimal_converted_packet(packet)[28])+'.'+str(decimal_converted_packet(packet)[29])
 
-def convert_unix_time(time):
-    date_object = datetime.fromtimestamp(time)
-    output = date_object.strftime('%Y-%m-%d %H:%M:%S') +':'+ str(date_object.microsecond)
-
-    return output
-
-def packet_maker(packet, timestamp_list, i):
-    return Packet(get_image_source_ip(packet), timestamp_list[i], row_splitter(packet), len(packet), i)
-
-def select_directory():
-    root = tk.Tk()
-    root.withdraw()
-    directory_path = filedialog.askdirectory()
-    return directory_path
+    return f'{decimal_converted_packet(packet)[26]}.{decimal_converted_packet(packet)[27]}.{decimal_converted_packet(packet)[28]}.{decimal_converted_packet(packet)[29]}'
+    #
