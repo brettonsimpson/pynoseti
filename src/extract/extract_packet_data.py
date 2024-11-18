@@ -1,3 +1,6 @@
+from src.process.classes import Packet
+from src.extract.convert_unix_time import convert_unix_time
+
 def separated_hex_values(packet):
     '''
     This function reads in a list of hexadecimal packet data, without spaces between each pair of characters,
@@ -162,3 +165,14 @@ def get_image_source_ip(packet):
 
     return f'{decimal_converted_packet(packet)[26]}.{decimal_converted_packet(packet)[27]}.{decimal_converted_packet(packet)[28]}.{decimal_converted_packet(packet)[29]}'
     #
+
+
+def assemble_packet_data(packet):
+
+    data = row_splitter(packet)
+    processed_packet = Packet(get_image_source_ip(packet),
+                              None,
+                              data,
+                              len(separated_hex_values(packet)))
+
+    return processed_packet

@@ -1,5 +1,5 @@
 import json
-from functions import Telescope
+from src.process.classes import Telescope
 
 def read_json_file():
 

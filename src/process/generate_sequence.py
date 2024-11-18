@@ -6,21 +6,20 @@ import datetime
 import progressbar
 import numpy as np
 import multiprocessing
-from functions import *
 
-from src.process.classes import Image
+from src.process.classes import Image, Sequence
 from src.process.compile_image import compile_image
-from src.process.read_json_file import read_json_file
+from src.extract.extract_median_frame import extract_median_frame
 
-def generate_sequence(array_image_list):
+def generate_sequence(packet_array, file_name, telescope_list):
 
     j=0
 
-    telescope_list, quabo_address_list = read_json_file()
+    array_image_list = []
     
     for telescope in telescope_list:
 
-        array_image_list.append([])
+        telescope_image_list = []
         
         for packet in packet_array:
             
@@ -31,8 +30,8 @@ def generate_sequence(array_image_list):
 
         for packet in telescope.data:
             
-            if packet.length == 1140:
-                
+            if packet.length == 570:
+        
                 if packet.source_ip == telescope.quabo_addresses[0]:
                     processed_packet_list[0].append(packet)
                 
@@ -52,8 +51,6 @@ def generate_sequence(array_image_list):
         
         i=0
     
-        telescope_image_list = []
-
         for element in range(np.min(board_frame_count)):
             telescope_image_list.append(Image(compile_image(
                                                     processed_packet_list[0][i].data,
@@ -64,9 +61,23 @@ def generate_sequence(array_image_list):
                                                 i))
             i+=1
 
+        if 'Ima_onsky' in file_name:
+
+            median_subtracted_telescope_image_list = []
+            median_frame = extract_median_frame(telescope_image_list)
+
+            for frame in telescope_image_list:
+            
+                median_subtracted_telescope_image_list.append(Image(frame.data-median_frame,frame.timestamp,frame.number))
+
+            sequence = Sequence(median_subtracted_telescope_image_list, median_frame, telescope.dome, file_name)
+
+        else:
+            median_frame = None
+            sequence = Sequence(telescope_image_list, median_frame, telescope.dome, file_name)
+
+        array_image_list.append(sequence)
 
         j+=1
-
-    print('\nComplete!\n')
     
     return array_image_list

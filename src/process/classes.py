@@ -7,13 +7,13 @@ class Quabo:
 
 class Packet:
 
-    def __init__(self, source_ip, timestamp, data, length, number):
+    def __init__(self, source_ip, timestamp, data, length):#, number):
 
         self.source_ip = source_ip
         self.timestamp = timestamp
         self.data = data
         self.length = length
-        self.number = number
+        #self.number = number
 
 class Telescope:
 

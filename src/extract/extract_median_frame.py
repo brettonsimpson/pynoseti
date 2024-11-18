@@ -1,7 +1,7 @@
 import numpy as np
-from functions import Median
+from src.process.classes import Median
 
-def create_median(telescope_image_list):
+def extract_median_frame(telescope_image_list):
 #
 
     median_sequence = []
@@ -12,11 +12,14 @@ def create_median(telescope_image_list):
         median_sequence.append(frame.data)
         #
 
+    #print(len(median_sequence))
+    #print(median_sequence[0])
     median_frame = np.median(np.stack(np.array(median_sequence)), axis=0)
     #
 
     return median_frame
     #
+
 
     #median_subtracted_telescope_image_list = []
     #

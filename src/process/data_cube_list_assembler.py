@@ -1,29 +1,10 @@
 import os
 import numpy as np
-import read_json_file
-from functions import Sequence
+from src.process.classes import Median, Sequence
 
-def data_cube_assembler(path):
-    telescope_list, quabo_address_list = read_json_file(file)
+def data_cube_list_assembler(array_data_sequence_list, telescope_list):
 
-    #for element
-    
-    processes = int(os.cpu_count()/2)
-    
-    os.mkdir(str(path)+'/pynoseti')
-
-    with os.scandir(path) as files:
-
-        file_count = 0
-
-        for file in files:
-
-            if file.is_file():
-                file_count += 1
-
-    array_data_sequence_list = []
-
-    array_data_sequence_list = np.array(array_data_sequence_list)
+    array_data_sequence_list = np.array(array_data_sequence_list, dtype='object')
 
     i=0
 
@@ -50,7 +31,7 @@ def data_cube_assembler(path):
 
         for file in telescope:
 
-            final_sequence_array[i].append(file[j])
+            final_sequence_array[i].append(file)#[j])
 
         i+=1
 
@@ -66,6 +47,10 @@ def data_cube_assembler(path):
 
         temp_median_list = []
 
+        temp_telescope_identifier = ''
+
+        temp_file_name = ''
+        
         for file in final_sequence_array[i]:
 
             frame_selection = [frame_number]
@@ -92,4 +77,4 @@ def data_cube_assembler(path):
         
         i+=1
 
-    return(final_telescope_data_array)
+    return final_telescope_data_array

@@ -16,7 +16,7 @@
 
         {"identifier": "Telescope 2",
         
-        "dome": "Astrograph E",
+        "dome": "Barnard",
 
         "quabo_addresses": 
         [
@@ -29,7 +29,7 @@
 
         {"identifier": "Telescope 3",
         
-        "dome": "Barnard",
+        "dome": "Astrograph E",
 
         "quabo_addresses": 
         [
