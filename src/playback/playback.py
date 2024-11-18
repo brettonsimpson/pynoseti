@@ -1,21 +1,22 @@
-from functions import *
-def playback_function(file, choice, file_count, file_name):
+import os
+import numpy as np
+import progressbar
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+import matplotlib.image as mpimg
+from src.extract.convert_unix_time import convert_unix_time
 
-    import os
-    import numpy as np
-    import progressbar
-    import matplotlib.pyplot as plt
-    from reader import reader_function
-    import matplotlib.animation as animation
-    from matplotlib.offsetbox import OffsetImage, AnnotationBbox
-    import matplotlib.image as mpimg
-    
+
+def playback_function(file, choice, file_count, file_name, path):
+
     telescope_choice = choice
     array_image_list = np.load(file, allow_pickle=True)
     cwd_path = os.getcwd()
 
     if telescope_choice != '':
         telescope_choice = int(telescope_choice)-1
+        
         
         fig, ax = plt.subplots()
         if 'Ima_onsky' in file_name:
@@ -58,40 +59,55 @@ def playback_function(file, choice, file_count, file_name):
         print('Complete!\n')
 
     elif telescope_choice == '':
-        bar = progressbar.ProgressBar(max_value=len(array_image_list))
-        print('\nRendering movie files for all telescopes...')
-        bar.update(j)
-        j=0
-        
-        for telescope in array_image_list:
-            fig, ax = plt.subplots()
-            if 'Ima_onsky' in file_name:
-                im = ax.imshow(np.clip(array_image_list[j].sequence[0].data-array_image_list[j].median_frame, a_min=0, a_max=1000), cmap='viridis', vmin=0)
-                cbar = fig.colorbar(im, ax=ax, orientation='vertical', label='Photoelectron Count')
-                title = ax.set_title('Frame Time: '+convert_unix_time(array_image_list[j].sequence[0].timestamp), loc='left')
-                frame_number = ax.text(-0.5, 33, 'Frame 0 of '+str(len(array_image_list[j].sequence)))
+        print('\nRendering movie file for all telescopes...')
+
+        plot_number = len(array_image_list)
+        fig, axes = plt.subplots(1, plot_number, figsize=(4*plot_number,4))
+        axes = np.atleast_1d(axes)
+
+        if 'Ima_onsky' in file_name:
+
+            ims = [ax.imshow(array_image_list[i].sequence[0].data, animated=True, vmin=0) for i, ax in enumerate(axes)]
+            frame_number = ims[0].axes.text(14, -4.58, 'Frame 1 of '+str(len(array_image_list[0].sequence)+1))
+            logo = mpimg.imread(str(cwd_path)+'/assets/panoseti_logo.png')
+            logo_box = OffsetImage(logo, zoom=0.3)
+            annotation_box = AnnotationBbox(logo_box, (0, 1.15), frameon=False, xycoords='axes fraction')
+            ims[0].axes.add_artist(annotation_box)
+
+            for i, ax in enumerate(axes):
+                ax.set_title('PDT '+convert_unix_time(array_image_list[i].sequence[0].timestamp), loc='left')
+                telescope = ax.text(-0.5, 33.5, f'{str(array_image_list[i].telescope)}')
                 ax.set_axis_off()
 
-                def animate(i):
-                    im.set_array(np.clip(array_image_list[j].sequence[i].data-array_image_list[j].median_frame, a_min=0, a_max=1000))
-                    ax.set_title('Frame Time: '+convert_unix_time(array_image_list[j].sequence[i].timestamp), loc='left')
-                    frame_number.set_text(f'Frame {i} of '+str(len(array_image_list[j].sequence)))
-                    return [im, ax]
+            def animate(frame):
+                for i, im in enumerate(ims):
+                    im.set_array(np.clip(array_image_list[i].sequence[frame].data, a_min=0, a_max=None))
+                    im.axes.set_title('PDT '+convert_unix_time(array_image_list[i].sequence[frame].timestamp), loc='left')
+                    frame_number.set_text(f'Frame {frame+1} of '+str(len(array_image_list[i].sequence)+1))
+                return [im]
+            
+            movie = animation.FuncAnimation(fig, animate, frames=len(array_image_list[0].sequence), interval=100, blit=False)
+            movie.save(f'{path}/telescope_{plot_number}_movie2_{file_count}.mp4', writer='ffmpeg', fps=30, dpi=60)
 
-            else:
-                im = ax.imshow(array_image_list[j].sequence[0].data, cmap='viridis', vmin=0)
-                cbar = fig.colorbar(im, ax=ax, orientation='vertical', label='Photoelectron Count')
-                title = ax.set_title('Frame Time: '+convert_unix_time(array_image_list[j].sequence[0].timestamp), loc='left')
-                frame_number = ax.text(-0.5, 33, 'Frame 0 of '+str(len(array_image_list[j].sequence)))
+        else:
+            ims = [ax.imshow(array_image_list[i].sequence[0].data, animated=True, vmin=0) for i, ax in enumerate(axes)]
+            frame_number = ims[0].axes.text(14, -4.58, 'Frame 1 of '+str(len(array_image_list[0].sequence)+1))
+            logo = mpimg.imread(str(cwd_path)+'/assets/panoseti_logo.png')
+            logo_box = OffsetImage(logo, zoom=0.3)
+            annotation_box = AnnotationBbox(logo_box, (0, 1.15), frameon=False, xycoords='axes fraction')
+            ims[0].axes.add_artist(annotation_box)
+
+            for i, ax in enumerate(axes):
+                ax.set_title('PDT '+convert_unix_time(array_image_list[i].sequence[0].timestamp), loc='left')
+                telescope = ax.text(-0.5, 33.5, f'{str(array_image_list[i].telescope)}')
                 ax.set_axis_off()
 
-                def animate(i):
-                    im.set_array(array_image_list[j].sequence[i].data)
-                    ax.set_title('Frame Time: '+convert_unix_time(array_image_list[j].sequence[i].timestamp), loc='left')
-                    frame_number.set_text(f'Frame {i} of '+str(len(array_image_list[j].sequence)))
-                    return [im, ax]
-                
-            movie = animation.FuncAnimation(fig, animate, frames=len(array_image_list[j].sequence), interval=100, blit=False)
-            movie.save(f'telescope_{j}_movie_{file_count}.mp4', writer='ffmpeg', fps=30, dpi=60)
-            j+=1
-            bar.update(j)
+            def animate(frame):
+                for i, im in enumerate(ims):
+                    im.set_array(np.clip(array_image_list[i].sequence[frame].data, a_min=0, a_max=None))
+                    im.axes.set_title('PDT '+convert_unix_time(array_image_list[i].sequence[frame].timestamp), loc='left')
+                    frame_number.set_text(f'Frame {frame+1} of '+str(len(array_image_list[i].sequence)+1))
+                return [im]
+            
+            movie = animation.FuncAnimation(fig, animate, frames=len(array_image_list[0].sequence), interval=100, blit=False)
+            movie.save(f'{path}/telescope_{plot_number}_movie2_{file_count}.mp4', writer='ffmpeg', fps=15, dpi=60)

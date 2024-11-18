@@ -10,7 +10,7 @@ import multiprocessing
 from pathlib import Path
 from pcapng import FileScanner
 from pcapng.blocks import EnhancedPacket
-from src.playback.playback_copy import *
+from src.playback.playback import *
 from src.process.aggregate_data import aggregate_data
 from src.interface.select_file_directory import select_file_directory
 
