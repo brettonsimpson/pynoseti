@@ -7,7 +7,6 @@ import progressbar
 import numpy as np
 from pcapng import FileScanner
 from pcapng.blocks import EnhancedPacket
-from functions import *
 
 with open('config.json', 'r') as file:
     config = json.load(file)
