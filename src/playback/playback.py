@@ -30,6 +30,7 @@ def playback_function(file, choice, file_name, save_directory):
             cbar = fig.colorbar(im, ax=ax, orientation='vertical', label='Photoelectron Count')
             timestamp = ax.set_title(convert_unix_time(array_image_list[telescope_choice].sequence[0].timestamp), loc='left', y=-0.065)
             frame_number = ax.text(-0.5, 34.25, 'Frame 1 of '+str(len(array_image_list[telescope_choice].sequence)+1))
+            telescope_identifier = ax.text(-0.5, 35.5, f'{array_image_list[telescope_choice].telescope}')
             logo = mpimg.imread(str(cwd_path)+'/assets/panoseti_logo.png')
             logo_box = OffsetImage(logo, zoom=0.5)
             annotation_box = AnnotationBbox(logo_box, (0.148, 1.081), frameon=False, xycoords='axes fraction')
@@ -47,6 +48,9 @@ def playback_function(file, choice, file_name, save_directory):
             cbar = fig.colorbar(im, ax=ax, orientation='vertical', label='Photoelectron Count')
             title = ax.set_title(convert_unix_time(array_image_list[telescope_choice].sequence[0].timestamp), loc='left', y=-0.065)
             frame_number = ax.text(-0.5, 34.25, 'Frame 0 of '+str(len(array_image_list[telescope_choice].sequence)))
+
+            telescope_identifier = ax.text(-0.5, 35.5, f'{array_image_list[telescope_choice].telescope}')
+
             logo = mpimg.imread(str(cwd_path)+'/assets/panoseti_logo.png')
             logo_box = OffsetImage(logo, zoom=0.5)
             annotation_box = AnnotationBbox(logo_box, (0.148, 1.081), frameon=False, xycoords='axes fraction')
