@@ -1,25 +1,5 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.ndimage import label, center_of_mass
-from datetime import datetime
-
-class Quabo:
-    def __init__(self, address, data):
-        self.address = address
-        self.data = data
-
-class Telescope:
-    def __init__(self, name, dome, quabo_addresses, data):
-        self.name = name
-        self.dome = dome
-        self.quabo_addresses = quabo_addresses
-        self.data = data
-
-class Image:
-    def __init__(self, data, timestamp, dome):
-        self.data = data
-        self.timestamp = timestamp
-        self.dome = dome
+from src.process.classes import Packet
+from src.extract.convert_unix_time import convert_unix_time
 
 def separated_hex_values(packet):
     '''
@@ -181,22 +161,18 @@ def row_splitter(packet):
             
     return image
 
-#creates a 2D array with 16 rows of 16 elements (pixel data to be plotted)
-
-def quabo_image_compiler(quabo_1, quabo_2, quabo_3, quabo_4):
-    final_quadrant_1 = np.kron(np.array([[0,1],[0,0]]), quabo_1)
-    final_quadrant_2 = np.kron(np.array([[0,0],[0,1]]), np.rot90(quabo_2, -1))
-    final_quadrant_3 = np.kron(np.array([[0,0],[1,0]]), np.rot90(quabo_3, -2))
-    final_quadrant_4 = np.kron(np.array([[1,0],[0,0]]), np.rot90(quabo_4, -3))
-
-    return final_quadrant_1+final_quadrant_2+final_quadrant_3+final_quadrant_4
-
-
 def get_image_source_ip(packet):
-    return str(decimal_converted_packet(packet)[26])+'.'+str(decimal_converted_packet(packet)[27])+'.'+str(decimal_converted_packet(packet)[28])+'.'+str(decimal_converted_packet(packet)[29])
 
-def convert_unix_time(time):
-    date_object = datetime.fromtimestamp(time)
-    output = date_object.strftime('%Y-%m-%d %H:%M:%S') +':'+ str(date_object.microsecond)
+    return f'{decimal_converted_packet(packet)[26]}.{decimal_converted_packet(packet)[27]}.{decimal_converted_packet(packet)[28]}.{decimal_converted_packet(packet)[29]}'
+    #
 
-    return output
+
+def assemble_packet_data(packet):
+
+    data = row_splitter(packet)
+    processed_packet = Packet(get_image_source_ip(packet),
+                              None,
+                              data,
+                              len(separated_hex_values(packet)))
+
+    return processed_packet
