@@ -8,19 +8,25 @@ import matplotlib.image as mpimg
 from src.extract.convert_unix_time import convert_unix_time
 
 
-def playback_function(file, choice, file_count, file_name, path):
+def playback_function(file, choice, file_name, save_directory):
 
     telescope_choice = choice
-    array_image_list = np.load(file, allow_pickle=True)
+    array_image_list = file
     cwd_path = os.getcwd()
 
-    if telescope_choice != '':
+    n=7
+
+    if 'preprocessed_data_cube' in file_name:
+        file_name = file_name[:-20]
+        n=0
+
+    if telescope_choice is not None:
         telescope_choice = int(telescope_choice)-1
-        
+        print(f'Rendering movie file for telescope: {array_image_list[telescope_choice].telescope}...\n')
         
         fig, ax = plt.subplots()
         if 'Ima_onsky' in file_name:
-            im = ax.imshow(np.clip(array_image_list[telescope_choice].sequence[0].data-array_image_list[telescope_choice].median_data[0].median_frame, a_min=0, a_max=1000), cmap='viridis', vmin=0)
+            im = ax.imshow(array_image_list[telescope_choice].sequence[0].data, cmap='viridis', vmin=0)
             cbar = fig.colorbar(im, ax=ax, orientation='vertical', label='Photoelectron Count')
             timestamp = ax.set_title(convert_unix_time(array_image_list[telescope_choice].sequence[0].timestamp), loc='left', y=-0.065)
             frame_number = ax.text(-0.5, 34.25, 'Frame 1 of '+str(len(array_image_list[telescope_choice].sequence)+1))
@@ -31,7 +37,7 @@ def playback_function(file, choice, file_count, file_name, path):
             ax.set_axis_off()
 
             def animate(i):
-                im.set_array(np.clip(array_image_list[telescope_choice].sequence[i].data-array_image_list[telescope_choice].median_data[0].median_frame, a_min=0, a_max=1000))
+                im.set_array(array_image_list[telescope_choice].sequence[i].data)
                 ax.set_title(convert_unix_time(array_image_list[telescope_choice].sequence[i].timestamp), loc='left', y=-0.065)
                 frame_number.set_text(f'Frame {i+1} of '+str(len(array_image_list[telescope_choice].sequence)+1))
                 return [im, ax]
@@ -54,12 +60,11 @@ def playback_function(file, choice, file_count, file_name, path):
                 return [im, ax]
             
         movie = animation.FuncAnimation(fig, animate, frames=len(array_image_list[telescope_choice].sequence), interval=100, blit=False)
-        movie.save(f'telescope_{telescope_choice}_movie_{file_count}.mp4', writer='ffmpeg', fps=200, dpi=60)
-        print('\nRendering movie file...\n')
+        movie.save(f'{save_directory}/{file_name[:-7]}_{array_image_list[telescope_choice].telescope}_movie.mp4'.replace(' ', '_'), writer='ffmpeg', fps=200, dpi=60)
         print('Complete!\n')
 
-    elif telescope_choice == '':
-        print('\nRendering movie file for all telescopes...')
+    elif telescope_choice is None:
+        print('Rendering movie file for all telescopes...')
 
         plot_number = len(array_image_list)
         fig, axes = plt.subplots(1, plot_number, figsize=(4*plot_number,4))
@@ -87,7 +92,7 @@ def playback_function(file, choice, file_count, file_name, path):
                 return [im]
             
             movie = animation.FuncAnimation(fig, animate, frames=len(array_image_list[0].sequence), interval=100, blit=False)
-            movie.save(f'{path}/telescope_{plot_number}_movie2_{file_count}.mp4', writer='ffmpeg', fps=30, dpi=60)
+            movie.save(f'{save_directory}/{file_name[:-7]}_movie.mp4', writer='ffmpeg', fps=200, dpi=60)
 
         else:
             ims = [ax.imshow(array_image_list[i].sequence[0].data, animated=True, vmin=0) for i, ax in enumerate(axes)]
@@ -110,4 +115,4 @@ def playback_function(file, choice, file_count, file_name, path):
                 return [im]
             
             movie = animation.FuncAnimation(fig, animate, frames=len(array_image_list[0].sequence), interval=100, blit=False)
-            movie.save(f'{path}/telescope_{plot_number}_movie2_{file_count}.mp4', writer='ffmpeg', fps=15, dpi=60)
+            movie.save(f'{save_directory}/{file_name[:-7]}_array_movie.mp4', writer='ffmpeg', fps=20, dpi=60)

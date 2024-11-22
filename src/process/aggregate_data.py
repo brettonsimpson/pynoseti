@@ -12,9 +12,11 @@ from src.process.data_cube_list_assembler import data_cube_list_assembler
 def aggregate_data(directory):
 
     telescope_list, quabo_address_list = read_json_file()
-    
+
     save_directory = f'{directory}/pynoseti'
-    os.mkdir(save_directory)
+
+    if os.path.isdir(save_directory) is False:
+        os.mkdir(save_directory)
     
     with os.scandir(directory) as files:
 
@@ -50,4 +52,3 @@ def aggregate_data(directory):
                 file_iterate +=1
 
     return data_cube_list_assembler(array_data_sequence_list, telescope_list), file_prefix
-        

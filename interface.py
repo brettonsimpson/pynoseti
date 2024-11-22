@@ -61,36 +61,44 @@ if option == 1:
 
     save_directory = str(directory)+'/pynoseti'
 
+    file_count = 0
+
     if os.path.isdir(save_directory):
+        with os.scandir(save_directory) as files:
+            
+            for file in files:
+                if os.path.splitext(os.path.basename(file.name))[1] == '.npy':
+                    file_count+=1
         
+    if file_count != 0:
+
         telescope_choice = input('\nWhich telescope would you like to playback data for?\n'
                             'Skip this prompt by pressing enter and process the entire file.\n'
                             'Enter the integer corresponding to one of the telescopes: ')
         
-        print('\nPreprocessed file directory recognized. Advancing to video file generation.')
+        if telescope_choice == '':
+            telescope_choice = None
+        
+        print('\nPreprocessed file directory recognized. Advancing to video file generation.\n')
 
-        if telescope_choice != '':
-            
-            #'''
+        #file = np.load(f'{save_directory}/')
+
+        if telescope_choice is not None:
             choice = int(telescope_choice)-1
-            with os.scandir(directory) as directory:
-                file_count = 1
-                for file in directory:
-                    if os.path.splitext(directory+os.path.basename(file.name))[1] == '.npy':
-                        #if file_count == choice:
-                        playback_function(file, telescope_choice, file_count, file.name, directory)
-                        #choice += 1
-            #'''
-            #choice = int(telescope_choice)-1
-            #with os.scandir(path) as files:
-        elif telescope_choice == '':
-            
             with os.scandir(save_directory) as files:
-                file_count = 1
+            
                 for file in files:
-                    if os.path.splitext(directory+os.path.basename(file.name))[1] == '.npy':
-                        file_count+=1
-                        playback_function(file, telescope_choice, file_count, file.name, save_directory)
+                    if os.path.splitext(os.path.basename(file.name))[1] == '.npy':
+                        
+                        playback_function(np.load(file, allow_pickle=True), telescope_choice, file.name, save_directory)
+                        
+        elif telescope_choice is None:
+            with os.scandir(save_directory) as files:
+                
+                for file in files:
+                    if os.path.splitext(os.path.basename(file.name))[1] == '.npy':
+                        
+                        playback_function(np.load(file, allow_pickle=True), None, file.name, save_directory)
 
     else:
         i=1
@@ -100,7 +108,7 @@ if option == 1:
             print(f'{i}. {telescope}')
             i+=1
         print('\nThis listed can be modified by editing the config.json file.')
-        print('=============================================================')
+        print('=============================================================\n')
         telescope_choice = input('Which telescope would you like to playback data for?\n'
                             'Skip this prompt by pressing enter and process the entire file.\n'
                             'Enter the integer corresponding to one of the telescopes: ')
@@ -109,26 +117,16 @@ if option == 1:
         
         processed_data = aggregate_data(directory)
         
-        if telescope_choice != '':
-            choice = int(telescope_choice)-1
-            with os.scandir(directory) as files:
-                file_count = 0
-                for file in files:
-                    if os.path.splitext(directory+os.path.basename(file.name))[1] == '.npy':
-                        if file_count == choice:
-                            playback_function(processed_data, telescope_choice)
-                        choice += 1
+        if telescope_choice is not None:
 
-        elif telescope_choice == '':
-            
-            with os.scandir(directory) as files:
-                file_count = 1
-                for file in files:
-                    file_count += 1
-                    if os.path.splitext(directory+os.path.basename(file.name))[1] == '.npy':
-                        playback_function(directory, processed_data, telescope_choice, file_count)
+            playback_function(processed_data[0], telescope_choice, processed_data[1], save_directory)
+
+        elif telescope_choice is None:
+
+            playback_function(processed_data[0], None, processed_data[1], save_directory)
 
 elif option == 2:
+    exit()
     path = input('\nPlease provide the directory of the files you would like to generate an event log for: ')
     path = path.replace('\\', '/')
     path = path.replace('"', '')
@@ -222,11 +220,13 @@ elif option == 4:
     analyzer_function(target_path)
 
 elif option == 5:
-    print('=====================================================================')
+    print('\n=====================================================================')
     print('Recognized telescopes:\n')
+    i=1
     for telescope in telescope_list:
-        print(telescope)
-    print('=====================================================================')
+        print(f'{i}. {telescope}')
+        i+=1
+    print('=====================================================================\n')
 
 
 #end_time = time.time()
