@@ -1,17 +1,13 @@
 import os
-import time
-import json
 import pcapng
-import datetime
-import progressbar
 import numpy as np
 import multiprocessing
 from pcapng import FileScanner
 from pcapng.blocks import EnhancedPacket
 
-from src.process.classes import Packet
-from src.extract.extract_packet_data import *
-from src.process.parallel_processing import parallel_processing
+from pynoseti.process.classes import Packet
+from pynoseti.extract.extract_packet_data import *
+from pynoseti.process.parallel_processing import parallel_processing
 
 def read_capture_file(file):
 

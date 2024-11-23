@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from src.process.classes import Median, Sequence
+from pynoseti.process.classes import Median, Sequence
 
 def data_cube_list_assembler(array_data_sequence_list, telescope_list):
 

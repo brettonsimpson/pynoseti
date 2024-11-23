@@ -1,13 +1,11 @@
 import os
 import numpy as np
-import progressbar
-import src
 
-from src.process.classes import Sequence, Median
-from src.process.read_capture_file import read_capture_file
-from src.process.read_json_file import read_json_file
-from src.process.generate_sequence import generate_sequence
-from src.process.data_cube_list_assembler import data_cube_list_assembler
+from pynoseti.process.classes import Sequence, Median
+from pynoseti.process.read_capture_file import read_capture_file
+from pynoseti.process.read_json_file import read_json_file
+from pynoseti.process.generate_sequence import generate_sequence
+from pynoseti.process.data_cube_list_assembler import data_cube_list_assembler
 
 def aggregate_data(directory):
 

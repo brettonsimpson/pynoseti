@@ -1,5 +1,5 @@
 import numpy as np
-from src.process.classes import Median
+from pynoseti.process.classes import Median
 
 def extract_median_frame(telescope_image_list):
 #

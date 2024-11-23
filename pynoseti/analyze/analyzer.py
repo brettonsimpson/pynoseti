@@ -3,7 +3,6 @@ import json
 import progressbar
 import numpy as np
 import pandas as pd
-from functions import *
 from scipy import ndimage
 import matplotlib.pyplot as plt
 

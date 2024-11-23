@@ -1,11 +1,10 @@
 import os
 import numpy as np
-import progressbar
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import matplotlib.image as mpimg
-from src.extract.convert_unix_time import convert_unix_time
+from pynoseti.extract.convert_unix_time import convert_unix_time
 
 
 def playback_function(file, choice, file_name, save_directory):

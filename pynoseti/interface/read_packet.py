@@ -3,10 +3,12 @@ import json
 import pcapng
 import pyshark
 import datetime
-import progressbar
+
 import numpy as np
 from pcapng import FileScanner
 from pcapng.blocks import EnhancedPacket
+
+from pynoseti.process.classes import Telescope
 
 with open('config.json', 'r') as file:
     config = json.load(file)

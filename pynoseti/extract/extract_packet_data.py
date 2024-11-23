@@ -1,5 +1,5 @@
-from src.process.classes import Packet
-from src.extract.convert_unix_time import convert_unix_time
+from pynoseti.process.classes import Packet
+from pynoseti.extract.convert_unix_time import convert_unix_time
 
 def separated_hex_values(packet):
     '''

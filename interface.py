@@ -1,18 +1,12 @@
 import os
-import sys
-import time
 import json
-import pcapng
-import datetime
-import progressbar
 import numpy as np
-import multiprocessing
 from pathlib import Path
 from pcapng import FileScanner
 from pcapng.blocks import EnhancedPacket
-from src.playback.playback import *
-from src.process.aggregate_data import aggregate_data
-from src.interface.select_file_directory import select_file_directory
+from pynoseti.playback.playback import *
+from pynoseti.process.aggregate_data import aggregate_data
+from pynoseti.interface.select_file_directory import select_file_directory
 
 with open('config.json', 'r') as file:
     config = json.load(file)

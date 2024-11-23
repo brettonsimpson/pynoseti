@@ -1,5 +1,5 @@
 import json
-from src.process.classes import Telescope
+from pynoseti.process.classes import Telescope
 
 def read_json_file():
 
