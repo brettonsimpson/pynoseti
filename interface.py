@@ -1,5 +1,7 @@
 import os
 import gc
+
+
 import json
 import numpy as np
 from pathlib import Path
@@ -149,7 +151,8 @@ elif option == 3:
 
     print(f'You selected: {directory}')
 
-    process_directory(directory, option)
+    if __name__ == '__main__':
+        process_directory(directory, option)
 
 
 elif option == 4:

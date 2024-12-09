@@ -1,5 +1,3 @@
-import pyshark
-
 from pynoseti.process.classes import Packet
 from pynoseti.extract.convert_unix_time import convert_unix_time
 

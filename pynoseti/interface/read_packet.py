@@ -1,8 +1,6 @@
-import os
 import json
 import pcapng
 import pyshark
-import datetime
 
 import numpy as np
 from pcapng import FileScanner
