@@ -1,13 +1,12 @@
-from multiprocessing import Pool, cpu_count
+from multiprocessing import Pool
 from tqdm import tqdm
 
 
-def parallel_processing(data, function, threads, file_count, file_iterate):
+def parallel_processing(data, function, available_threads):
 
-    #threads = int(cpu_count()/4)
+    allowed_threads = int(available_threads/2)
 
-
-    with Pool(threads) as pool:
+    with Pool(allowed_threads) as pool:
 
         results = list(tqdm(pool.imap(function, data), total=len(data)))#, desc=f'Processing file {file_iterate} of {file_count}...'))
 

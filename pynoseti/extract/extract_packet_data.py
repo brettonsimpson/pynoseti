@@ -1,3 +1,5 @@
+import pyshark
+
 from pynoseti.process.classes import Packet
 from pynoseti.extract.convert_unix_time import convert_unix_time
 
@@ -168,11 +170,10 @@ def get_image_source_ip(packet):
 
 
 def assemble_packet_data(packet):
-
-    data = row_splitter(packet)
-    processed_packet = Packet(get_image_source_ip(packet),
-                              None,
-                              data,
-                              len(separated_hex_values(packet)))
+    
+    processed_packet = Packet(get_image_source_ip(bytes(packet).hex()),
+                              packet.time,
+                              row_splitter(bytes(packet).hex()),
+                              len(separated_hex_values(bytes(packet).hex())))
 
     return processed_packet

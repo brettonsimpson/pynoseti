@@ -1,10 +1,11 @@
-import os
 import numpy as np
 from pynoseti.process.classes import Median, Sequence
 
 def data_cube_list_assembler(array_data_sequence_list, telescope_list):
 
-    array_data_sequence_list = np.array(array_data_sequence_list, dtype='object')
+    #array_data_sequence_list = np.array(array_data_sequence_list, dtype='object')
+
+    #print(len(array_data_sequence_list))
 
     i=0
 

@@ -1,11 +1,10 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 import matplotlib.animation as animation
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
-import matplotlib.image as mpimg
 from pynoseti.extract.convert_unix_time import convert_unix_time
-
 
 def playback_function(file, choice, file_name, save_directory):
 
@@ -63,6 +62,7 @@ def playback_function(file, choice, file_name, save_directory):
                 return [im, ax]
             
         movie = animation.FuncAnimation(fig, animate, frames=len(array_image_list[telescope_choice].sequence), interval=100, blit=False)
+        print('This might take a while...')
         movie.save(f'{save_directory}/{file_name[:-7]}_{array_image_list[telescope_choice].telescope}_movie.mp4'.replace(' ', '_'), writer='ffmpeg', fps=200, dpi=60)
         print('Complete!\n')
 
@@ -95,7 +95,8 @@ def playback_function(file, choice, file_name, save_directory):
                 return [im]
             
             movie = animation.FuncAnimation(fig, animate, frames=len(array_image_list[0].sequence), interval=100, blit=False)
-            movie.save(f'{save_directory}/{file_name[:-7]}_movie.mp4', writer='ffmpeg', fps=200, dpi=60)
+            print('This might take a while...')
+            movie.save(f'{save_directory}/{file_name[:-7]}_full_array.mp4', writer='ffmpeg', fps=200, dpi=60)
 
         else:
             ims = [ax.imshow(array_image_list[i].sequence[0].data, animated=True, vmin=0) for i, ax in enumerate(axes)]
@@ -106,16 +107,17 @@ def playback_function(file, choice, file_name, save_directory):
             ims[0].axes.add_artist(annotation_box)
 
             for i, ax in enumerate(axes):
-                ax.set_title('PDT '+convert_unix_time(array_image_list[i].sequence[0].timestamp), loc='left')
+                ax.set_title('PDT '+convert_unix_time(float(array_image_list[i].sequence[0].timestamp)), loc='left')
                 telescope = ax.text(-0.5, 33.5, f'{str(array_image_list[i].telescope)}')
                 ax.set_axis_off()
 
             def animate(frame):
                 for i, im in enumerate(ims):
                     im.set_array(np.clip(array_image_list[i].sequence[frame].data, a_min=0, a_max=None))
-                    im.axes.set_title('PDT '+convert_unix_time(array_image_list[i].sequence[frame].timestamp), loc='left')
+                    im.axes.set_title('PDT '+convert_unix_time(float(array_image_list[i].sequence[frame].timestamp)), loc='left')
                     frame_number.set_text(f'Frame {frame+1} of '+str(len(array_image_list[i].sequence)+1))
                 return [im]
             
             movie = animation.FuncAnimation(fig, animate, frames=len(array_image_list[0].sequence), interval=100, blit=False)
-            movie.save(f'{save_directory}/{file_name[:-7]}_array_movie.mp4', writer='ffmpeg', fps=20, dpi=60)
+            print('This might take a while...')
+            movie.save(f'{save_directory}/{file_name[:-7]}_full_array.mp4', writer='ffmpeg', fps=20, dpi=60)

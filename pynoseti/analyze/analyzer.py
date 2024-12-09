@@ -1,16 +1,19 @@
 import os
 import json
-import progressbar
 import numpy as np
 import pandas as pd
 from scipy import ndimage
 import matplotlib.pyplot as plt
 
+from pynoseti.extract.extract_packet_data import convert_unix_time
+#from 
+
 def analyzer_function(path):
     events = {
         'Pixel Locations': [],
         'Peak Count': [],
-        'Time': [],
+        'Telescope': [],
+        'Time (PDT)': [],
         'Threshold': [],
         'File Path': []
     }
@@ -30,8 +33,8 @@ def analyzer_function(path):
 
     with os.scandir(path) as files:
         j=0
-        bar = progressbar.ProgressBar(max_value=file_count)
-        bar.update(j)
+        #bar = progressbar.ProgressBar(max_value=file_count)
+        #bar.update(j)
 
         for file in files:
             if file.is_file():
@@ -41,7 +44,7 @@ def analyzer_function(path):
                     
                     for sequence in file_data:
                         i=0
-                        for frame in file_data[i]:
+                        for frame in sequence.sequence:
 
                             threshold_image = frame.data > count_threshold
 
@@ -52,13 +55,14 @@ def analyzer_function(path):
 
                                 events['Pixel Locations'].append(centroids)
                                 events['Peak Count'].append(len(centroids))
-                                events['Time'].append(convert_unix_time(frame.timestamp))
+                                events['Telescope'].append(sequence.telescope)
+                                events['Time (PDT)'].append(convert_unix_time(float(frame.timestamp)))
                                 events['Threshold'].append(count_threshold)
                                 events['File Path'].append(path+file_name)
                             i+=1
 
                     j+=1
-                    bar.update(j)
+                    #bar.update(j)
             
     output_file = pd.DataFrame(events)
     output_file.to_csv(path+'/events.csv', index=False)

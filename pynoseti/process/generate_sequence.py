@@ -4,7 +4,7 @@ from pynoseti.process.classes import Image, Sequence
 from pynoseti.process.compile_image import compile_image
 from pynoseti.extract.extract_median_frame import extract_median_frame
 
-def generate_sequence(packet_array, file_name, telescope_list):
+def generate_sequence(packet_array, batch, telescope_list):
 
     j=0
 
@@ -13,6 +13,8 @@ def generate_sequence(packet_array, file_name, telescope_list):
     for telescope in telescope_list:
 
         telescope_image_list = []
+
+        telescope.data.clear()
         
         for packet in packet_array:
             
@@ -54,23 +56,29 @@ def generate_sequence(packet_array, file_name, telescope_list):
                                                 i))
             i+=1
 
-        if 'Ima_onsky' in file_name:
+        for file_name in batch:###########   TEMPORARY  ################
 
-            median_subtracted_telescope_image_list = []
-            median_frame = extract_median_frame(telescope_image_list)
+            if 'Ima_onsky' in file_name:
 
-            for frame in telescope_image_list:
-            
-                median_subtracted_telescope_image_list.append(Image(frame.data-median_frame,frame.timestamp,frame.number))
+                median_subtracted_telescope_image_list = []
+                median_frame = extract_median_frame(telescope_image_list)
 
-            sequence = Sequence(median_subtracted_telescope_image_list, median_frame, telescope.dome, file_name)
+                for frame in telescope_image_list:
+                
+                    median_subtracted_telescope_image_list.append(Image(frame.data-median_frame,frame.timestamp,frame.number))
 
-        else:
-            median_frame = None
-            sequence = Sequence(telescope_image_list, median_frame, telescope.dome, file_name)
+                sequence = Sequence(median_subtracted_telescope_image_list, median_frame, telescope.dome, file_name)
+
+            else:
+                median_frame = None
+                sequence = Sequence(telescope_image_list, median_frame, telescope.dome, file_name)
 
         array_image_list.append(sequence)
 
         j+=1
+
+        #telescope.data.clear()
+
+    del packet_array
     
     return array_image_list

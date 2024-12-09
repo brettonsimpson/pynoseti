@@ -1,12 +1,15 @@
 import os
+import gc
 import json
 import numpy as np
 from pathlib import Path
-from pcapng import FileScanner
-from pcapng.blocks import EnhancedPacket
 from pynoseti.playback.playback import *
-from pynoseti.process.aggregate_data import aggregate_data
+from pynoseti.process.aggregate_batch_data import aggregate_batch_data
 from pynoseti.interface.select_file_directory import select_file_directory
+from pynoseti.process.assemble_batch_array import assemble_batch_array
+from pynoseti.process.read_json_file import read_json_file
+from pynoseti.analyze.analyzer import analyzer_function
+from pynoseti.process.process_directory import process_directory
 
 with open('config.json', 'r') as file:
     config = json.load(file)
@@ -109,6 +112,9 @@ if option == 1:
         print('')
         print(f'Target directory created for selected files at {save_directory}\n')
         
+        if telescope_choice == '':
+            telescope_choice = None
+
         processed_data = aggregate_data(directory)
         
         if telescope_choice is not None:
@@ -120,17 +126,20 @@ if option == 1:
             playback_function(processed_data[0], None, processed_data[1], save_directory)
 
 elif option == 2:
-    exit()
-    path = input('\nPlease provide the directory of the files you would like to generate an event log for: ')
-    path = path.replace('\\', '/')
-    path = path.replace('"', '')
 
-    if os.path.isdir(path):
-        analyzer_function(path)
+    print('\nPlease provide the directory of the files you would like to generate an event log for: ')
+    
+    directory = select_file_directory()
+
+    print(f'You selected: {directory}')
+
+    if os.path.isdir(directory):
+        analyzer_function(directory)
     else:
+        exit()
         print('\nPreprocessed file directory not recognized. Generating file directory...')
-        reader_function(path)
-        analyzer_function(path)
+        reader_function(directory)
+        analyzer_function(directory)
 
 elif option == 3:
 
@@ -140,17 +149,8 @@ elif option == 3:
 
     print(f'You selected: {directory}')
 
-    save_directory = f'{directory}/pynoseti'
+    process_directory(directory, option)
 
-    if __name__ == '__main__':
-        aggregated_data = aggregate_data(directory)
-
-    file_prefix = Path(aggregated_data[1]).stem[:-6]
-
-    np.save(f'{save_directory}/{file_prefix}preprocessed_data_cube', np.array(aggregated_data[0], dtype='object'))
-
-    print(f'Data cube saved to: {save_directory}')
-    print('Preprocessing of file directory complete!\n')
 
 elif option == 4:
     exit()
