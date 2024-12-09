@@ -16,16 +16,16 @@ def read_capture_file_batch(batch):
     
     available_threads = os.cpu_count()
 
-    allowed_threads = int(available_threads/2)
+    allowed_threads = int(available_threads/4)
 
     packet_hex_data_list = parallel_processing(batch,
                                                read_capture_file,
-                                               available_threads)
+                                               allowed_threads)
     
     new_list = list(chain(*packet_hex_data_list))
 
     packet_data_array = parallel_processing(new_list,
                                             assemble_packet_data,
-                                            available_threads)
+                                            allowed_threads)
 
     return packet_data_array
