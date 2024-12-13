@@ -166,7 +166,6 @@ def get_image_source_ip(packet):
     return f'{decimal_converted_packet(packet)[26]}.{decimal_converted_packet(packet)[27]}.{decimal_converted_packet(packet)[28]}.{decimal_converted_packet(packet)[29]}'
     #
 
-
 def assemble_packet_data(packet):
     
     processed_packet = Packet(get_image_source_ip(bytes(packet).hex()),
@@ -175,3 +174,6 @@ def assemble_packet_data(packet):
                               len(separated_hex_values(bytes(packet).hex())))
 
     return processed_packet
+
+def extract_date_from_name(file):
+    return file[-22:][:-7].replace('_', '')

@@ -65,7 +65,9 @@ def generate_sequence(packet_array, batch, telescope_list):
 
                 for frame in telescope_image_list:
                 
-                    median_subtracted_telescope_image_list.append(Image(frame.data-median_frame,frame.timestamp,frame.number))
+                    median_subtracted_telescope_image_list.append(Image(np.clip(frame.data-median_frame, a_min=0, a_max=0),
+                                                                        frame.timestamp,
+                                                                        frame.number))
 
                 sequence = Sequence(median_subtracted_telescope_image_list, median_frame, telescope.dome, file_name)
 

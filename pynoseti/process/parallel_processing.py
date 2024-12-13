@@ -4,7 +4,7 @@ from tqdm import tqdm
 
 def parallel_processing(data, function, available_threads):
 
-    allowed_threads = int(available_threads/2)
+    allowed_threads = int(3*available_threads/4)
 
     with Pool(allowed_threads) as pool:
 

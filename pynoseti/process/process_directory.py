@@ -38,10 +38,29 @@ def process_directory(directory, option):
 
         if option == 3:
 
-            np.save(f'{save_directory}/batch_{batch_iterate+1}_preprocessed_data_cube',
-                    np.array(aggregated_data, dtype='object'))
-            
-            print(f'Data cube saved to: {save_directory}')
+            for file in batch:
+
+                if 'Ima_onsky' in file:
+
+                    imaging_mode = True
+
+                else:
+                    imaging_mode = False
+
+            if imaging_mode is True:
+
+                np.save(f'{save_directory}/Ima_onsky_batch_{batch_iterate+1}_preprocessed_data_cube',
+                        np.array(aggregated_data, dtype='object'))
+                
+                print(f'Data cube saved to: {save_directory}')
+
+            else:
+                np.save(f'{save_directory}/batch_{batch_iterate+1}_preprocessed_data_cube',
+                        np.array(aggregated_data, dtype='object'))
+                
+                print(f'Data cube saved to: {save_directory}')
+
+                
     
         batch_iterate +=1
 

@@ -1,10 +1,7 @@
 import os
-import gc
-
-
 import json
 import numpy as np
-from pathlib import Path
+
 from pynoseti.playback.playback import *
 from pynoseti.process.aggregate_batch_data import aggregate_batch_data
 from pynoseti.interface.select_file_directory import select_file_directory
@@ -80,23 +77,27 @@ if option == 1:
         
         print('\nPreprocessed file directory recognized. Advancing to video file generation.\n')
 
-        #file = np.load(f'{save_directory}/')
 
-        if telescope_choice is not None:
-            choice = int(telescope_choice)-1
-            with os.scandir(save_directory) as files:
-            
-                for file in files:
-                    if os.path.splitext(os.path.basename(file.name))[1] == '.npy':
+        with os.scandir(save_directory) as files:
+            for file in files:
+                if os.path.splitext(os.path.basename(file.name))[1] == '.npy':
+
+
+                    if telescope_choice is not None:
+                        choice = int(telescope_choice)-1
+                        #with os.scandir(save_directory) as files:
                         
+                            #for file in files:
+                                #if os.path.splitext(os.path.basename(file.name))[1] == '.npy':
+                                    
                         playback_function(np.load(file, allow_pickle=True), telescope_choice, file.name, save_directory)
-                        
-        elif telescope_choice is None:
-            with os.scandir(save_directory) as files:
-                
-                for file in files:
-                    if os.path.splitext(os.path.basename(file.name))[1] == '.npy':
-                        
+                                    
+                    elif telescope_choice is None:
+                        #with os.scandir(save_directory) as files:
+                            
+                            #for file in files:
+                                #if os.path.splitext(os.path.basename(file.name))[1] == '.npy':
+                                    
                         playback_function(np.load(file, allow_pickle=True), None, file.name, save_directory)
 
     else:

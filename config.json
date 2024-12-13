@@ -41,6 +41,6 @@
         }
     ],
 
-    "count_threshold": 1000,
+    "count_threshold": 2000,
     "PH_mode_count_threshold": 12.5
 }
