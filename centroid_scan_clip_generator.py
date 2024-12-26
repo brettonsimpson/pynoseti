@@ -12,7 +12,7 @@ file_path = "/home/brett/Data/pynoseti/airplane_batch_test/pynoseti/Ima_onsky_ba
 
 file = np.load(file_path, allow_pickle=True)
 
-count_threshold = 2000
+count_threshold = 2500
 
 
 j=0
@@ -26,6 +26,21 @@ j=0
 #for frame in sequence.sequence:
 
 
+class Source:
+
+    def __init__(self,
+                 first_detection_time,
+                 last_detection_time,
+                 azimuth,
+                 detector_plane_coordinates,
+                 proper_motion_magnitude,
+                 proper_motion_direction,
+                 altitude,
+                 blink, #True/False
+                 blink_frequency,
+                 object_identifier,
+                 SNR,
+                 point_source): #True/False
 
 
 

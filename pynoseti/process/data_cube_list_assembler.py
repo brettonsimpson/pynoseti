@@ -71,7 +71,7 @@ def data_cube_list_assembler(array_data_sequence_list, telescope_list):
 
             temp_file_name = file.file_name
             
-        final_telescope_data_array.append(Sequence(temp_complete_sequence,
+        final_telescope_data_array.append(Sequence(np.array(temp_complete_sequence),
                                                 temp_median_list,
                                                 temp_telescope_identifier,
                                                 temp_file_name))

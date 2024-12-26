@@ -95,7 +95,7 @@ def playback_function(file, choice, file_name, save_directory):
             def animate(frame):
                 for i, im in enumerate(ims):
                     if frame < len(array_image_list[i].sequence):
-                        im.set_array(array_image_list[i].sequence[frame].data, a_min=0, a_max=None)
+                        im.set_array(np.clip(array_image_list[i].sequence[frame].data, a_min=0, a_max=None))
                         im.axes.set_title('PDT '+convert_unix_time(int(array_image_list[i].sequence[frame].timestamp)), loc='left')
                         frame_number.set_text(f'Frame {frame+1} of '+str(len(array_image_list[i].sequence)+1))
                 return [im]
@@ -104,7 +104,7 @@ def playback_function(file, choice, file_name, save_directory):
             fps = len(array_image_list[0].sequence)/playback_period
             
             movie = animation.FuncAnimation(fig, animate, frames=len(array_image_list[0].sequence), interval=100, blit=False)
-            plt.show()
+            
             print('This might take a while...')
             movie.save(f'{save_directory}/{file_name[:-7]}_full_array.mp4', writer='ffmpeg', fps=fps, dpi=60)
 
@@ -123,7 +123,7 @@ def playback_function(file, choice, file_name, save_directory):
 
             def animate(frame):
                 for i, im in enumerate(ims):
-                    im.set_array(array_image_list[i].sequence[frame].data, a_min=0, a_max=None)
+                    im.set_array(np.clip(array_image_list[i].sequence[frame].data, a_min=0, a_max=None))
                     im.axes.set_title('PDT '+convert_unix_time(float(array_image_list[i].sequence[frame].timestamp)), loc='left')
                     frame_number.set_text(f'Frame {frame+1} of '+str(len(array_image_list[i].sequence)+1))
                 return [im]
