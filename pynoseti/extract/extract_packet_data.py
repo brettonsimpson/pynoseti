@@ -176,4 +176,10 @@ def assemble_packet_data(packet):
     return processed_packet
 
 def extract_date_from_name(file):
-    return file[-22:][:-7].replace('_', '')
+
+    date = file[-22:][:-7].replace('_', '')
+    
+    if date == 'pcapng:Zone.Ide':
+        return '99999'
+
+    return date

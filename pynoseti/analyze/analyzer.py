@@ -6,6 +6,8 @@ from tqdm import tqdm
 from scipy import ndimage
 import matplotlib.pyplot as plt
 
+from pynoseti.analyze.scan_bounding_box import scan_bounding_box
+
 from pynoseti.extract.extract_packet_data import convert_unix_time
 
 def analyzer_function(path):
@@ -40,13 +42,36 @@ def analyzer_function(path):
                     file_data = np.load(str(path)+'/'+str(file_name), allow_pickle=True)
                     
                     for sequence in file_data:
+
+                        frame_iterate = 0
                         
                         for frame in sequence.sequence:
 
-                            threshold_image = np.clip(frame.data, a_min=0, a_max=None) > count_threshold
+                            if frame_iterate == 25:
 
-                            labeled_array, feature_number = ndimage.label(threshold_image)
-                            centroids = ndimage.center_of_mass(threshold_image, labeled_array, range(1, feature_number+1))
+                                threshold_image = np.clip(frame.data, a_min=0, a_max=None) > count_threshold
+
+                                labeled_array, feature_number = ndimage.label(threshold_image)
+                                centroids = ndimage.center_of_mass(threshold_image, labeled_array, range(1, feature_number+1))
+                            
+                                for centroid in centroids:
+
+                                    new_centroid = scan_bounding_box(centroid, frame.data)
+                                    
+
+                                    if new_centroid is not None:
+
+                                        source_candidate_scanner()
+
+                            if frame_iterate != 25 and frame_iterate % 25 == 0:
+
+                                blank
+
+                                
+
+                            frame_iterate+=1
+
+
 
                             if len(centroids) > 0:
 
