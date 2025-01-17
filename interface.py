@@ -118,7 +118,7 @@ if option == 1:
         if telescope_choice == '':
             telescope_choice = None
 
-        processed_data = aggregate_data(directory)
+        processed_data = aggregate_batch_data(directory, telescope_list)
         
         if telescope_choice is not None:
 

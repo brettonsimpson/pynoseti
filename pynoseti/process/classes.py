@@ -47,10 +47,14 @@ class Median:
         self.median_frame = median_frame
         self.frame_selection = frame_selection
 
-#class Source_Candidate(self):
-#
-#    def __init__():
-#        self.
+class Source_Candidate:
+
+    def __init__(self, centroid, timestamp, motion_history):
+        
+        self.centroid = centroid
+        self.timestamp = timestamp
+        self.motion_history = motion_history
+
 
 class Source:
 
@@ -63,8 +67,13 @@ class Source:
                  proper_motion_direction):
 
         self.identifier = identifier
-        self.first_detection_time = first_detection_time_ms
-        self.last_detection_time = last_detection_time_ms
+        self.first_detection_time_ms = first_detection_time_ms
+        self.last_detection_time_ms = last_detection_time_ms
         self.motion_history = motion_history
         self.average_proper_motion = average_proper_motion
         self.proper_motion_direction = proper_motion_direction
+
+    def coordinate_update(self, location, timestamp):
+
+        self.motion_history.append(location)
+        self.last_detection_time_ms = timestamp
