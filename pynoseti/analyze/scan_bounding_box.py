@@ -26,6 +26,12 @@ def scan_bounding_box(centroid, frame):
     new_centroid = ndimage.center_of_mass(threshold_image, labeled_array, range(1, feature_number+1))
 
     if len(new_centroid) != 0 and centroid != new_centroid:
+        print(f'Centroid: {centroid}')
+        print(f'New Centroid: {new_centroid}\n')
+        #plt.imshow(frame.data)
+        #plt.scatter(new_centroid[0], new_centroid[1])
+        #plt.scatter(centroid[0], centroid[1])
+        #plt.show()
         
         return new_centroid
 

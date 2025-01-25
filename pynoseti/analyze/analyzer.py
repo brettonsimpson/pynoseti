@@ -35,6 +35,8 @@ def analyzer_function(path):
         config = json.load(file)
     count_threshold = config["count_threshold"]
 
+    scan_interval = 25
+
     with os.scandir(path) as files:
 
         for file in tqdm(list(files)):
@@ -55,81 +57,84 @@ def analyzer_function(path):
                         
                         for frame in sequence.sequence:
 
-                            if frame_iterate % 25 == 0 or frame_iterate == 0:
+                            if frame_iterate % scan_interval == 0 or frame_iterate == 0:
                                 #print(frame_iterate)
                                 #print(len(sequence.sequence))
 
                                 threshold_image = np.clip(frame.data, a_min=0, a_max=None) > count_threshold
 
                                 labeled_array, feature_number = ndimage.label(threshold_image)
+
                                 centroids = ndimage.center_of_mass(threshold_image, labeled_array, range(1, feature_number+1))
 
                                 for centroid in centroids:
 
-
-
-                                    candidate_source_index.append(Source_Candidate(centroid, frame.timestamp, motion_history=None))
+                                    candidate_source_index.append(Source_Candidate(centroid,
+                                                                                   frame.timestamp,
+                                                                                   motion_history=None))
 
                             
                                 #for candidate in candidate_source_index:
 
                                 for centroid in centroids:
 
-                                    if frame_iterate + 25 < len(sequence.sequence) - 1:
+                                    if frame_iterate < len(sequence.sequence) - 25:
 
-                                        new_centroid = scan_bounding_box(centroid, sequence.sequence[frame_iterate+25].data)
-                                
+                                        new_centroid = scan_bounding_box(centroid, sequence.sequence[frame_iterate+scan_interval].data)
+                                        #print('test')
+                                    #print(new_centroid)
 
-                                        #if new_centroid is not None and len(source_index) == 0:
+                                    #if new_centroid is not None and len(source_index) == 0:
 
-                                        #    source_index.append(Source(identifier=None,
-                                        #                            first_detection_time_ms=frame.timestamp,
-                                        #                            last_detection_time_ms=frame.timestamp,
-                                        #                            motion_history=[new_centroid],
-                                        #                            average_proper_motion=None,
-                                        #                            proper_motion_direction=None))
+                                    #    source_index.append(Source(identifier=None,
+                                    #                            first_detection_time_ms=frame.timestamp,
+                                    #                            last_detection_time_ms=frame.timestamp,
+                                    #                            motion_history=[new_centroid],
+                                    #                            average_proper_motion=None,
+                                    #                            proper_motion_direction=None))
 
-                                        if new_centroid is not None:# and len(source_index) > 0:
-                                            # If a new centroid is detected in the centroid's bounding box
+                                    if new_centroid is not None:# and len(source_index) > 0:
+                                        # If a new centroid is detected in the centroid's bounding box
 
-                                            # fcomaopcm
+                                        # fcomaopcm
 
-                                            #print(new_centroid)
-                                            #print(f'There are {len(source_index)} sources')
+                                        #print(new_centroid)
+                                        #print(f'There are {len(source_index)} sources')
 
-                                            #source_match = False
-                                            source_match = False
+                                        print('moving source detected')
 
-                                            for source in source_index:
+                                        #source_match = False
+                                        source_match = False
 
-                                                if centroid in source.motion_history and frame.timestamp <= source.last_detection_time_ms + 300.0:
+                                        for source in source_index:
 
-                                                    source.coordinate_update(new_centroid, frame.timestamp)
+                                            if centroid in source.motion_history and frame.timestamp <= source.last_detection_time_ms + 300.0:
 
-                                                    source_match = True
-                                                    print('continuing')
-                                                    continue
+                                                source.coordinate_update(new_centroid, frame.timestamp)
 
-                                            
-
-                                            print('test')
-                                            if source_match is False:
-
-                                                source_index.append(Source(identifier=None,
-                                                                        first_detection_time_ms=frame.timestamp,
-                                                                        last_detection_time_ms=frame.timestamp,
-                                                                        motion_history=[new_centroid],
-                                                                        average_proper_motion=None,
-                                                                        proper_motion_direction=None))
+                                                source_match = True
+                                                print('continuing')
+                                                #continue
 
                                         
 
+                                        if source_match is False:
 
-                                        #elif new_centroid is None:
+                                            source_index.append(Source(identifier = None,
+                                                                    first_detection_time_ms = frame.timestamp,
+                                                                    last_detection_time_ms = frame.timestamp,
+                                                                    motion_history = [new_centroid],
+                                                                    average_proper_motion = None,
+                                                                    proper_motion_direction = None))
 
-                                        #    candidate_source_index.append(Source_Candidate(centroid,
-                                        #                                                frame.timestamp,
-                                        #                                                motion_history=[centroid]))
+                                    
+
+
+                                    #elif new_centroid is None:
+
+                                    #    candidate_source_index.append(Source_Candidate(centroid,
+                                    #                                                frame.timestamp,
+                                    #                                                motion_history=[centroid]))
                                         
                             frame_iterate+=1
 
@@ -144,23 +149,25 @@ def analyzer_function(path):
                             #    events['Threshold'].append(count_threshold)
                             #    events['File Path'].append(path+file_name)
 
-            
-    print(len(source_index[0].motion_history))
-    print(source_index[1].motion_history)
-    test=[source_index[0].motion_history]
+    print(len(source_index))            
+    #print(len(source_index[0].motion_history))
+    #print(source_index[1].motion_history)
+    #test=[source_index[0].motion_history]
 
     #test = [item for sublist in test for item in sublist]
 
-    print(len(source_index))
+    #for element in source_index:
+
+    #    print(element.motion_history)
 
     #print(test)
 
-    x=[]
-    y=[]
+    #x=[]
+    #y=[]
 
-    for element in test:
-        x.append(element[0][0])
-        y.append(element[0][1])
+    #for element in test:
+    #    x.append(element[0][0])
+    #    y.append(element[0][1])
 
         #plt.scatter(x,y)
         #plt.gca().invert_yaxis()
@@ -173,9 +180,9 @@ def analyzer_function(path):
 
     #for element in x:
         
-    plt.scatter(x,y)
-    plt.gca().invert_yaxis()
-    plt.show()
+    #plt.scatter(x,y)
+    #plt.gca().invert_yaxis()
+    #plt.show()
     
        
     output_file = pd.DataFrame(events)

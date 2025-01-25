@@ -55,7 +55,6 @@ class Source_Candidate:
         self.timestamp = timestamp
         self.motion_history = motion_history
 
-
 class Source:
 
     def __init__(self,
@@ -77,3 +76,11 @@ class Source:
 
         self.motion_history.append(location)
         self.last_detection_time_ms = timestamp
+
+
+class High_Count_Pixel:
+
+    def __init__(self, pixel, local_mean):
+
+        self.pixel = pixel
+        self.local_mean = local_mean

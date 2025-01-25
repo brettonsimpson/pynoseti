@@ -81,6 +81,7 @@ def playback_function(file, choice, file_name, save_directory):
         if 'Ima_onsky' in file_name:
 
             ims = [ax.imshow(array_image_list[i].sequence[0].data, animated=True, vmin=0) for i, ax in enumerate(axes)]
+            
             frame_number = ims[0].axes.text(14, -4.58, 'Frame 1 of '+str(len(array_image_list[0].sequence)+1))
             logo = mpimg.imread(str(cwd_path)+'/assets/panoseti_logo.png')
             logo_box = OffsetImage(logo, zoom=0.3)
@@ -90,7 +91,13 @@ def playback_function(file, choice, file_name, save_directory):
             for i, ax in enumerate(axes):
                 ax.set_title('PDT '+convert_unix_time(int(array_image_list[i].sequence[0].timestamp)), loc='left')
                 telescope = ax.text(-0.5, 33.5, f'{str(array_image_list[i].telescope)}')
+
+                #if i == 2:
+                #    cbar = fig.colorbar(ims[2], axes[2], orientation='vertical', label='Photoelectron Count')
+                
                 ax.set_axis_off()
+
+            
 
             def animate(frame):
                 for i, im in enumerate(ims):
@@ -98,7 +105,10 @@ def playback_function(file, choice, file_name, save_directory):
                         im.set_array(np.clip(array_image_list[i].sequence[frame].data, a_min=0, a_max=None))
                         im.axes.set_title('PDT '+convert_unix_time(int(array_image_list[i].sequence[frame].timestamp)), loc='left')
                         frame_number.set_text(f'Frame {frame+1} of '+str(len(array_image_list[i].sequence)+1))
+                        
                 return [im]
+            
+            
             
             playback_period = (array_image_list[0].sequence[len(array_image_list[0].sequence)-1].timestamp-array_image_list[0].sequence[0].timestamp)
             fps = len(array_image_list[0].sequence)/playback_period

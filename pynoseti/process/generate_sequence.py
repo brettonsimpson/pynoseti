@@ -3,6 +3,7 @@ import numpy as np
 from pynoseti.process.classes import Image, Sequence
 from pynoseti.process.compile_image import compile_image
 from pynoseti.extract.extract_median_frame import extract_median_frame
+from pynoseti.process.mitigate_high_count_pixels import mitigate_high_count_pixels
 
 def generate_sequence(packet_array, batch, telescope_list):
 
@@ -75,7 +76,10 @@ def generate_sequence(packet_array, batch, telescope_list):
                 median_frame = None
                 sequence = Sequence(telescope_image_list, median_frame, telescope.dome, file_name)
 
-        array_image_list.append(sequence)
+
+        cleaned_sequence = mitigate_high_count_pixels(sequence)
+
+        array_image_list.append(cleaned_sequence)
 
         j+=1
 

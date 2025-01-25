@@ -54,7 +54,7 @@ if option == 1:
     print('\nSelect a directory containing data you would like to process...')
     directory = select_file_directory()
     print(f'You selected: {directory}')
-
+    
     save_directory = str(directory)+'/pynoseti'
 
     file_count = 0
@@ -82,22 +82,13 @@ if option == 1:
             for file in files:
                 if os.path.splitext(os.path.basename(file.name))[1] == '.npy':
 
-
                     if telescope_choice is not None:
                         choice = int(telescope_choice)-1
-                        #with os.scandir(save_directory) as files:
                         
-                            #for file in files:
-                                #if os.path.splitext(os.path.basename(file.name))[1] == '.npy':
-                                    
                         playback_function(np.load(file, allow_pickle=True), telescope_choice, file.name, save_directory)
                                     
                     elif telescope_choice is None:
-                        #with os.scandir(save_directory) as files:
-                            
-                            #for file in files:
-                                #if os.path.splitext(os.path.basename(file.name))[1] == '.npy':
-                                    
+                        
                         playback_function(np.load(file, allow_pickle=True), None, file.name, save_directory)
 
     else:
@@ -114,6 +105,9 @@ if option == 1:
                             'Enter the integer corresponding to one of the telescopes: ')
         print('')
         print(f'Target directory created for selected files at {save_directory}\n')
+
+        print(directory)
+        print(save_directory)
         
         if telescope_choice == '':
             telescope_choice = None
