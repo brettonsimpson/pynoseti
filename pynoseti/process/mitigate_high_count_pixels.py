@@ -5,12 +5,20 @@ from pynoseti.process.classes import High_Count_Pixel
 def mitigate_high_count_pixels(sequence):
 
     time_series_pixel_list = []
+
     for i in range(len(sequence.sequence[0].data)):
+
         row = []
+
         for j in range(len(sequence.sequence[0].data)):
+
             row.append([])
+
         time_series_pixel_list.append(row)
+
     pixel_means_frame = time_series_pixel_list
+    # 
+
     for frame in sequence.sequence:
         i=0
         j=0
@@ -64,6 +72,9 @@ def mitigate_high_count_pixels(sequence):
         high_count_pixels_list_with_means.append(High_Count_Pixel(pixel, local_mean))
 
     ones_mask = np.ones((32,32))
+    # Create a frame whose value everywhere is 1.0 except where a high count pixel mean is detected
+    # so that division by the high count mask does
+
     i=0
     for row in high_count_mask:
         j=0
@@ -79,15 +90,9 @@ def mitigate_high_count_pixels(sequence):
         i+=1
 
 
-
-
-    print('going through sequence')
-
     for frame in sequence.sequence:
 
-        #frame = frame.data.astype(np.float32)
-
-        frame.data = frame.data.astype(np.float32) / ones_mask
+        frame.data = frame.data.astype(np.float32)/ones_mask
 
 
     return sequence

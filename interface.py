@@ -2,6 +2,10 @@ import os
 import json
 import numpy as np
 
+import warnings
+
+warnings.filterwarnings("ignore")
+
 from pynoseti.playback.playback import *
 from pynoseti.process.aggregate_batch_data import aggregate_batch_data
 from pynoseti.interface.select_file_directory import select_file_directory

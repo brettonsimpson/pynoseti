@@ -20,23 +20,30 @@ def assemble_batch_array(directory):
 
         for file in files:
 
+            #if file.name.endswith('.DS_Store'):
+            #    pass
+
             if file.is_file():
             # Clarifies that the current element in the for loop is a file and not a directory.
+                file_name = os.path.basename(file)
 
-                file_list.append(os.path.abspath(file))
-                # Adds the absolute path for each file to a list for later reference.
+                if file_name != '.DS_Store':
 
-                date_list.append(int(extract_date_from_name(os.path.basename(file))))
-                # Create a list of dates extracted from the file names of each file in the directory.
-                # This is necessary because files can have their creation dates modified when copied
-                # and pasted. Also, when creating batches, this ensures the batches are formed from a
-                # list sorted by date first, not the other way around.
-            
-                if file_count == 0:
-                    file_prefix = file.name
+                    file_list.append(os.path.abspath(file))
+                    #print(file_name)
+                    # Adds the absolute path for each file to a list for later reference.
 
-                file_count += 1
-                # Increase the file count by one and continue on to the next file.
+                    date_list.append(int(extract_date_from_name(os.path.basename(file))))
+                    # Create a list of dates extracted from the file names of each file in the directory.
+                    # This is necessary because files can have their creation dates modified when copied
+                    # and pasted. Also, when creating batches, this ensures the batches are formed from a
+                    # list sorted by date first, not the other way around.
+                
+                    if file_count == 0:
+                        file_prefix = file.name
+
+                    file_count += 1
+                    # Increase the file count by one and continue on to the next file.
 
         dictionary = {}
         for date, file in zip(date_list, file_list):

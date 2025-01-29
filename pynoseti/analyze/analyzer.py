@@ -82,7 +82,7 @@ def analyzer_function(path):
 
                                         new_centroid = scan_bounding_box(centroid, sequence.sequence[frame_iterate+scan_interval].data)
                                         #print('test')
-                                    #print(new_centroid)
+                                        print(new_centroid)
 
                                     #if new_centroid is not None and len(source_index) == 0:
 
@@ -96,7 +96,7 @@ def analyzer_function(path):
                                     if new_centroid is not None:# and len(source_index) > 0:
                                         # If a new centroid is detected in the centroid's bounding box
 
-                                        # fcomaopcm
+                                        
 
                                         #print(new_centroid)
                                         #print(f'There are {len(source_index)} sources')
@@ -162,10 +162,8 @@ def analyzer_function(path):
 
     #print(test)
 
-    #x=[]
-    #y=[]
 
-    #for element in test:
+    #for element in source_index:
     #    x.append(element[0][0])
     #    y.append(element[0][1])
 
@@ -183,6 +181,36 @@ def analyzer_function(path):
     #plt.scatter(x,y)
     #plt.gca().invert_yaxis()
     #plt.show()
+
+    empty_frame = np.zeros((32,32))
+
+    x=[]
+    y=[]
+
+    for source in source_index:
+
+        #x=[]
+        #y=[]
+
+        for position in source.motion_history:
+            print(len(source.motion_history))
+            x.append(position[0][0])
+            print(f'x is {position[0][0]}')
+            y.append(position[0][1])
+            print(f'y is {position[0][1]}\n')
+
+    x = np.array(x)
+    y = np.array(y)
+
+    coefficients = np.polyfit(x, y, 1)
+    slope, intercept = coefficients
+    y_fit = slope * x + intercept
+        
+    plt.plot(empty_frame)
+    plt.plot(x,y_fit, color='red')
+    plt.scatter(x,y)
+    plt.gca().invert_yaxis()
+    plt.show()
     
        
     output_file = pd.DataFrame(events)

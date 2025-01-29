@@ -2,7 +2,7 @@ import numpy as np
 import time
 import matplotlib.pyplot as plt
 
-file = np.load("/home/brett/Data/pynoseti/sample_airplane/pynoseti/Ima_onsky_batch_20_preprocessed_data_cube.npy", allow_pickle=True)
+file = np.load("/Users/brettonsimpson/Data/PANOSETI/sample_airplane_TEST/pynoseti/Ima_onsky_batch_20_preprocessed_data_cube_TEST.npy", allow_pickle=True)
 
 from pynoseti.process.classes import High_Count_Pixel
 
@@ -115,7 +115,7 @@ for sequence in file:
 
     #save_file_list.append()
 
-np.save("/home/brett/Data/pynoseti/sample_airplane_TEST/pynoseti/Ima_onsky_batch_20_preprocessed_data_cube_TEST.npy", np.array(file, dtype='object'))
+np.save("/Users/brettonsimpson/Data/PANOSETI/sample_airplane_TEST/pynoseti/Ima_onsky_batch_20_preprocessed_data_cube_TEST.npy", np.array(file, dtype='object'))
 
 
 
