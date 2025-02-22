@@ -70,11 +70,14 @@ def data_cube_list_assembler(array_data_sequence_list, telescope_list):
             temp_telescope_identifier = file.telescope
 
             temp_file_name = file.file_name
+
+            temp_max_count = file.max_count
             
         final_telescope_data_array.append(Sequence(np.array(temp_complete_sequence),
                                                 temp_median_list,
                                                 temp_telescope_identifier,
-                                                temp_file_name))
+                                                temp_file_name,
+                                                temp_max_count))
         
         i+=1
 

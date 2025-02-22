@@ -34,12 +34,13 @@ class Image:
 
 class Sequence:
 
-    def __init__(self, sequence, median_data, telescope, file_name):
+    def __init__(self, sequence, median_data, telescope, file_name, max_count):
 
         self.sequence = sequence
         self.median_data = median_data
         self.telescope = telescope
         self.file_name = file_name
+        self.max_count = max_count
 
 class Median:
     def __init__(self, median_frame, frame_selection):
@@ -59,15 +60,15 @@ class Source:
 
     def __init__(self,
                  identifier,
-                 first_detection_time_ms,
-                 last_detection_time_ms,
+                 first_detection_time_s,
+                 last_detection_time_s,
                  motion_history,
                  average_proper_motion,
                  proper_motion_direction):
 
         self.identifier = identifier
-        self.first_detection_time_ms = first_detection_time_ms
-        self.last_detection_time_ms = last_detection_time_ms
+        self.first_detection_time_s = first_detection_time_s
+        self.last_detection_time_s = last_detection_time_s
         self.motion_history = motion_history
         self.average_proper_motion = average_proper_motion
         self.proper_motion_direction = proper_motion_direction
@@ -75,7 +76,7 @@ class Source:
     def coordinate_update(self, location, timestamp):
 
         self.motion_history.append(location)
-        self.last_detection_time_ms = timestamp
+        self.last_detection_time_s = timestamp
 
 
 class High_Count_Pixel:

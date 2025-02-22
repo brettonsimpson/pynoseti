@@ -24,15 +24,27 @@ def playback_function(file, choice, file_name, save_directory):
         
         fig, ax = plt.subplots()
         if 'Ima_onsky' in file_name:
-            im = ax.imshow(array_image_list[telescope_choice].sequence[0].data, cmap='viridis', vmin=0)
+            im = ax.imshow(array_image_list[telescope_choice].sequence[0].data,
+                           cmap='viridis',
+                           vmin=0,
+                           vmax=array_image_list[telescope_choice].max_count)
+            
             cbar = fig.colorbar(im, ax=ax, orientation='vertical', label='Photoelectron Count')
+
             timestamp = ax.set_title(convert_unix_time(array_image_list[telescope_choice].sequence[0].timestamp), loc='left', y=-0.065)
+
             frame_number = ax.text(-0.5, 34.25, 'Frame 1 of '+str(len(array_image_list[telescope_choice].sequence)+1))
+
             telescope_identifier = ax.text(-0.5, 35.5, f'{array_image_list[telescope_choice].telescope}')
+
             logo = mpimg.imread(str(cwd_path)+'/assets/panoseti_logo.png')
+
             logo_box = OffsetImage(logo, zoom=0.5)
+
             annotation_box = AnnotationBbox(logo_box, (0.148, 1.081), frameon=False, xycoords='axes fraction')
+
             ax.add_artist(annotation_box)
+
             ax.set_axis_off()
 
             def animate(i):
@@ -45,7 +57,11 @@ def playback_function(file, choice, file_name, save_directory):
             fps = len(array_image_list[0].sequence)/playback_period
 
         else:
-            im = ax.imshow(array_image_list[telescope_choice].sequence[0].data, cmap='viridis', vmin=0)
+            im = ax.imshow(array_image_list[telescope_choice].sequence[0].data,
+                           cmap='viridis',
+                           vmin=0,
+                           vmax=array_image_list[telescope_choice].max_count)
+            
             cbar = fig.colorbar(im, ax=ax, orientation='vertical', label='Photoelectron Count')
             title = ax.set_title(convert_unix_time(array_image_list[telescope_choice].sequence[0].timestamp), loc='left', y=-0.065)
             frame_number = ax.text(-0.5, 34.25, 'Frame 0 of '+str(len(array_image_list[telescope_choice].sequence)))
@@ -80,7 +96,10 @@ def playback_function(file, choice, file_name, save_directory):
 
         if 'Ima_onsky' in file_name:
 
-            ims = [ax.imshow(array_image_list[i].sequence[0].data, animated=True, vmin=0) for i, ax in enumerate(axes)]
+            ims = [ax.imshow(array_image_list[i].sequence[0].data,
+                             animated=True,
+                             vmin=0,
+                             vmax=array_image_list[i].max_count) for i, ax in enumerate(axes)]
             
             frame_number = ims[0].axes.text(14, -4.58, 'Frame 1 of '+str(len(array_image_list[0].sequence)+1))
             logo = mpimg.imread(str(cwd_path)+'/assets/panoseti_logo.png')
@@ -119,7 +138,11 @@ def playback_function(file, choice, file_name, save_directory):
             movie.save(f'{save_directory}/{file_name[:-7]}_full_array.mp4', writer='ffmpeg', fps=fps, dpi=60)
 
         else:
-            ims = [ax.imshow(array_image_list[i].sequence[0].data, animated=True, vmin=0) for i, ax in enumerate(axes)]
+            ims = [ax.imshow(array_image_list[i].sequence[0].data,
+                             animated=True,
+                             vmin=0,
+                             vmax=array_image_list[i].max_count) for i, ax in enumerate(axes)]
+            
             frame_number = ims[0].axes.text(14, -4.58, 'Frame 1 of '+str(len(array_image_list[0].sequence)+1))
             logo = mpimg.imread(str(cwd_path)+'/assets/panoseti_logo.png')
             logo_box = OffsetImage(logo, zoom=0.3)

@@ -45,6 +45,14 @@
     
     "PH_mode_count_threshold": 12.5,
 
-    "single_axis_detector_plane_FOV": 10
+    "single_axis_detector_plane_FOV": 10,
+
+    "detector_plane_pixel_scale": 0.31,
+
+    "credentials":
+    [
+        {"username": "niro",
+        "password": "niro"}
+    ]
 
 }

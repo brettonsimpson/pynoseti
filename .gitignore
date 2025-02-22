@@ -3,3 +3,6 @@ test.py
 test2.py
 pynoseti.code-workspace
 .DS_Store
+subtract_high_count_pixels_TEST.py
+subtract_high_count_pixels.py
+centroid_scan_clip_generator.py

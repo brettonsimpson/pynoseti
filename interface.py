@@ -130,7 +130,8 @@ elif option == 2:
 
     print('\nPlease provide the directory of the files you would like to generate an event log for: ')
     
-    directory = select_file_directory()
+    #directory = select_file_directory()
+    directory = '/Users/brettonsimpson/Data/PANOSETI/sample_airplane_TEST/pynoseti'
 
     print(f'You selected: {directory}')
 

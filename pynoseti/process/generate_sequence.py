@@ -4,6 +4,7 @@ from pynoseti.process.classes import Image, Sequence
 from pynoseti.process.compile_image import compile_image
 from pynoseti.extract.extract_median_frame import extract_median_frame
 from pynoseti.process.mitigate_high_count_pixels import mitigate_high_count_pixels
+from pynoseti.process.find_max_count import find_max_count
 
 def generate_sequence(packet_array, batch, telescope_list):
 
@@ -70,14 +71,25 @@ def generate_sequence(packet_array, batch, telescope_list):
                                                                         frame.timestamp,
                                                                         frame.number))
 
-                sequence = Sequence(median_subtracted_telescope_image_list, median_frame, telescope.dome, file_name)
+                sequence = Sequence(median_subtracted_telescope_image_list,
+                                    median_frame,
+                                    telescope.dome,
+                                    file_name,
+                                    None)
 
             else:
                 median_frame = None
-                sequence = Sequence(telescope_image_list, median_frame, telescope.dome, file_name)
+                sequence = Sequence(telescope_image_list,
+                                    median_frame,
+                                    telescope.dome,
+                                    file_name,
+                                    None)
 
 
         cleaned_sequence = mitigate_high_count_pixels(sequence)
+
+        cleaned_sequence.max_count = find_max_count(cleaned_sequence)
+        print(f'{telescope.name} max count: {cleaned_sequence.max_count}')
 
         array_image_list.append(cleaned_sequence)
 
