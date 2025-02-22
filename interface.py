@@ -13,6 +13,7 @@ from pynoseti.process.assemble_batch_array import assemble_batch_array
 from pynoseti.process.read_json_file import read_json_file
 from pynoseti.analyze.analyzer import analyzer_function
 from pynoseti.process.process_directory import process_directory
+from pynoseti.interface.downloader import downloader
 
 with open('config.json', 'r') as file:
     config = json.load(file)
@@ -46,9 +47,9 @@ print(f'''
     each telescope. (This can take a       for all files within a directory.    addresses.
     while)                           
 
-(2) Analyzer                           (4) All of the Above [Untested]
-    Produces a .csv file cataloguing       Perform all operations listed
-    transient centroids recognized in      previously.
+(2) Analyzer                           (4) Download
+    Produces a .csv file cataloguing       Retrieve observing data from an
+    transient centroids recognized in      HTML page.
     processed data.
 ''')
 
@@ -156,65 +157,17 @@ elif option == 3:
 
 
 elif option == 4:
-    exit()
-    path = input('\nPlease provide the directory of the files you would like to preprocess: ')
-    path = path.replace('\\', '/')
-    path = path.replace('"', '')
-    target_path = str(path)+'/pynoseti'
-    if os.path.isdir(target_path):
-        telescope_choice = input('Which telescope would you like to playback data for?\n'
-                            'Skip this prompt by pressing enter and process the entire file.\n'
-                            'Enter the integer corresponding to one of the telescopes: ')
-        
-        print('\nPreprocessed file directory recognized. Advancing to video file generation.\n')
 
-        if telescope_choice != '':
-            choice = int(telescope_choice)-1
-            with os.scandir(path) as files:
-                file_count = 1
-                for file in files:
-                    if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
-                        if file_count == choice:
-                            playback_function(file, telescope_choice)
-                        choice += 1
+    print('If the host webpage is password protected, verify that the username and password are correct in the config.json file.')
 
-        elif telescope_choice == '':
-            with os.scandir(path) as files:
-                for file in files:
-                    if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
-                        playback_function(file, telescope_choice)
-    else:
-        print('\nPreprocessed file directory not recognized. Generating file directory...')
-        
-        os.mkdir(str(path)+'/pynoseti')
-        print('Target directory created for selected files at '+str(path)+'/panoseti\n')
-        
-        reader_function(path)
+    url = input('Enter a URL to install data from: ')
 
-        telescope_choice = input('Which telescope would you like to playback data for?\n'
-                            'Skip this prompt by pressing enter and process the entire file.\n'
-                            'Enter the integer corresponding to one of the telescopes: ')
+    target_directory = input('And locate a target directory for downloaded data: ')
 
-        if os.path.isdir(path):
-            print('\nPreprocessed file directory recognized. Advancing to video file generation.\n')
+    downloader(url, target_directory)
 
-            if telescope_choice != '':
-                choice = int(telescope_choice)-1
-                with os.scandir(path) as files:
-                    file_count = 1
-                    for file in files:
-                        if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
-                            if file_count == choice:
-                                playback_function(file, telescope_choice)
-                            choice += 1
-
-            elif telescope_choice == '':
-                with os.scandir(path) as files:
-                    for file in files:
-                        if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
-                            playback_function(file, telescope_choice)
-
-    analyzer_function(target_path)
+    print('Download Complete!')
+      
 
 elif option == 5:
     print('\n=====================================================================')
