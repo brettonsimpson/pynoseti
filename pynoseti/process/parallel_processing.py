@@ -2,11 +2,7 @@ from multiprocessing import Pool
 from tqdm import tqdm
 
 
-def parallel_processing(data, function, available_threads):
-
-    allowed_threads = int(3*available_threads/4)
-    #allowed_threads = available_threads
-    print(allowed_threads)
+def parallel_processing(data, function, allowed_threads):
     
     with Pool(allowed_threads) as pool:
 
