@@ -89,13 +89,11 @@ def generate_sequence(packet_array, batch, telescope_list):
         cleaned_sequence = mitigate_high_count_pixels(sequence)
 
         cleaned_sequence.max_count = find_max_count(cleaned_sequence)
-        print(f'{telescope.name} max count: {cleaned_sequence.max_count}')
+        #print(f'{telescope.name} max count: {cleaned_sequence.max_count}')
 
         array_image_list.append(cleaned_sequence)
 
         j+=1
-
-        #telescope.data.clear()
 
     del packet_array
     

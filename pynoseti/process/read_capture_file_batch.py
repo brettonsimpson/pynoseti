@@ -22,14 +22,10 @@ def read_capture_file_batch(batch):
                                                read_capture_file,
                                                allowed_threads)
     
-    print('Packet hex data list produced')
-    
     new_list = list(chain(*packet_hex_data_list))
 
     packet_data_array = parallel_processing(new_list,
                                             assemble_packet_data,
                                             allowed_threads)
-
-    print('Packet hex data array produced')
 
     return packet_data_array

@@ -1,7 +1,7 @@
 import os
 import json
 import numpy as np
-
+import six
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -177,6 +177,24 @@ elif option == 5:
         print(f'{i}. {telescope}')
         i+=1
     print('=====================================================================\n')
+
+
+elif option == 6:
+
+    path = input('Enter a path: ')
+    #path = '/Users/brettonsimpson/Data/PANOSETI/ima_dataset2/pynoseti/Ima_onsky_batch_1_preprocessed_data_cube.npy'
+    path.replace('\'', '')
+    file = np.load(path, allow_pickle=True)
+
+    for sequence in file:
+
+        max_count = 0
+
+        for frame in sequence.sequence:
+
+            print(frame.data.flatten())
+
+
 
 
 #end_time = time.time()

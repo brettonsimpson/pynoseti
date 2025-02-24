@@ -19,18 +19,9 @@ def process_directory(directory, option):
     if os.path.isdir(save_directory) is False:
         os.mkdir(save_directory)
 
-    
-
     batch_iterate = 0
 
-    #import tracemalloc
-
     for batch in batch_array:
-
-        #snapshot = tracemalloc.take_snapshot()
-        #top_stats = snapshot.statistics('lineno')
-        #for stat in top_stats[:10]:
-        #    print(stat)
 
         print(f'\nProcessing batch {batch_iterate+1} of {len(batch_array)}...')
 
@@ -59,9 +50,7 @@ def process_directory(directory, option):
                         np.array(aggregated_data, dtype='object'))
                 
                 print(f'Data cube saved to: {save_directory}')
-
-                
-    
+            
         batch_iterate +=1
 
         if option != 3:
