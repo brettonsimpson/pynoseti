@@ -30,7 +30,6 @@ def assemble_batch_array(directory):
                 if file_name != '.DS_Store':
 
                     file_list.append(os.path.abspath(file))
-                    #print(file_name)
                     # Adds the absolute path for each file to a list for later reference.
 
                     date_list.append(int(extract_date_from_name(os.path.basename(file))))

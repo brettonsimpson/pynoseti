@@ -17,7 +17,6 @@ def mitigate_high_count_pixels(sequence):
         time_series_pixel_list.append(row)
 
     pixel_means_frame = time_series_pixel_list
-    # 
 
     for frame in sequence.sequence:
         i=0

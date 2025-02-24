@@ -59,4 +59,4 @@ def process_directory(directory, option):
         del aggregated_data
         gc.collect()
 
-        print('\nPreprocessing of file directory complete!\n')
+    print('\nPreprocessing of file directory complete!\n')
