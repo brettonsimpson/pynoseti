@@ -85,12 +85,17 @@ def generate_sequence(packet_array, batch, telescope_list):
                                     file_name,
                                     None)
 
+        try:
 
-        cleaned_sequence = mitigate_high_count_pixels(sequence)
+            cleaned_sequence = mitigate_high_count_pixels(sequence)
 
-        cleaned_sequence.max_count = find_max_count(cleaned_sequence)
+            cleaned_sequence.max_count = find_max_count(cleaned_sequence)
 
-        array_image_list.append(cleaned_sequence)
+            array_image_list.append(cleaned_sequence)
+
+        except IndexError as e:
+
+            pass
 
         j+=1
 
