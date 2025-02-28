@@ -83,8 +83,10 @@ def data_cube_list_assembler(array_data_sequence_list, telescope_list):
             
             i+=1
 
+        return final_telescope_data_array
+
     except IndexError as e:
 
-        pass
+        return None
 
-    return final_telescope_data_array
+    

@@ -20,6 +20,7 @@ def aggregate_batch_data(batch, telescope_list):
     final_data = data_cube_list_assembler(array_data_sequence_list,
                                           telescope_list)
     
+    
     del data, sequence, array_data_sequence_list, telescope_list
 
 
