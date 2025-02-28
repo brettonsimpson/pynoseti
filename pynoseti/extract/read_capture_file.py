@@ -16,10 +16,12 @@ def read_capture_file(file):
         for packet in capture:
             concatenated_batch_data.append(packet)
 
+        del capture
+
     except UnboundLocalError as e:
         print('\nUnbound local error encountered. Continuing to next file.\n')
 
-    del capture
+    
     gc.collect()    
 
     return concatenated_batch_data
