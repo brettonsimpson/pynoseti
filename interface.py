@@ -166,7 +166,7 @@ elif option == 4:
 
     downloader(url, target_directory)
 
-    print('Download Complete!')
+    print('Download Complete!\n')
       
 
 elif option == 5:

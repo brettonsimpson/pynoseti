@@ -9,18 +9,19 @@ def read_capture_file(file):
     try:
         capture = rdpcap(file)
 
-    except error.Scapy_Exception as e:
-        print('\nUnsupported capture file type. Skipping for now.\n')
-    
-    try:
         for packet in capture:
+
             concatenated_batch_data.append(packet)
 
         del capture
 
-    except UnboundLocalError as e:
-        print('\nUnbound local error encountered. Continuing to next file.\n')
+    except error.Scapy_Exception as e:
 
+        print(f'\nUnsupported capture file type. Skipping for now. Error: {e}\n')
+
+    except UnboundLocalError as e:
+
+        print(f'\nUnbound local error encountered. Continuing to next file. Error: {e}\n')
     
     gc.collect()    
 

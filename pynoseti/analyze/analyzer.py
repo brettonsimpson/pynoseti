@@ -61,7 +61,7 @@ def analyzer_function(path):
                         
                         for frame in sequence.sequence:
 
-                            if frame_iterate % scan_interval == 0 or frame_iterate == 0:
+                            try:
 
                                 #print(frame.timestamp)
 
@@ -123,6 +123,9 @@ def analyzer_function(path):
                                                                     motion_history = [new_centroid],
                                                                     average_proper_motion = None,
                                                                     proper_motion_direction = None))
+                                            
+                            except IndexError as e:
+                                pass
 
                                 
                             frame_iterate+=1
@@ -130,6 +133,8 @@ def analyzer_function(path):
 
 
     print(f'\nSource index length is {len(source_index)}.\n')
+
+    exit()
     
     #print(len(source_index[0].motion_history))
 
