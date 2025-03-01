@@ -85,44 +85,49 @@ def analyzer_function(path):
 
                                     #if frame_iterate < len(sequence.sequence) - 25:
 
-                                    new_centroid = scan_bounding_box(centroid, sequence.sequence[frame_iterate+scan_interval].data)
+                                    try:
 
-                                    if new_centroid is not None:
+                                        new_centroid = scan_bounding_box(centroid, sequence.sequence[frame_iterate+scan_interval].data)
 
-                                        source_match = False
+                                        if new_centroid is not None:
 
-                                        for source in source_index:
-                                            
-                                            difference_threshold = 1
-                                            
-                                            if frame.timestamp - source.last_detection_time_s < difference_threshold:
+                                            source_match = False
 
-                                                #print(f'{frame.timestamp-source.last_detection_time_s} is < {difference_threshold}')
-                                                #print(f'Source first detection time is {source.first_detection_time_s}')
-                                                #print(f'Source last detection time is {source.last_detection_time_s}')
-                                                #print(f'Current timestamp is {frame.timestamp}')
-                                                #print(f'Interval: {test}', '\n')
-                                                #test+=1
+                                            for source in source_index:
+                                                
+                                                difference_threshold = 1
+                                                
+                                                if frame.timestamp - source.last_detection_time_s < difference_threshold:
 
-
-
-                                                source.coordinate_update(new_centroid, frame.timestamp)
-
-                                                #print(new_centroid)
-                                                #print(frame.timestamp)
-                                                #print('\n')
-
-                                                source_match = True
+                                                    #print(f'{frame.timestamp-source.last_detection_time_s} is < {difference_threshold}')
+                                                    #print(f'Source first detection time is {source.first_detection_time_s}')
+                                                    #print(f'Source last detection time is {source.last_detection_time_s}')
+                                                    #print(f'Current timestamp is {frame.timestamp}')
+                                                    #print(f'Interval: {test}', '\n')
+                                                    #test+=1
 
 
-                                        if source_match is False:
 
-                                            source_index.append(Source(identifier = None,
-                                                                    first_detection_time_s = frame.timestamp,
-                                                                    last_detection_time_s = frame.timestamp,
-                                                                    motion_history = [new_centroid],
-                                                                    average_proper_motion = None,
-                                                                    proper_motion_direction = None))
+                                                    source.coordinate_update(new_centroid, frame.timestamp)
+
+                                                    #print(new_centroid)
+                                                    #print(frame.timestamp)
+                                                    #print('\n')
+
+                                                    source_match = True
+
+
+                                            if source_match is False:
+
+                                                source_index.append(Source(identifier = None,
+                                                                        first_detection_time_s = frame.timestamp,
+                                                                        last_detection_time_s = frame.timestamp,
+                                                                        motion_history = [new_centroid],
+                                                                        average_proper_motion = None,
+                                                                        proper_motion_direction = None))
+                                                
+                                    except IndexError as e:
+                                        pass
                                             
                             except IndexError as e:
                                 pass
