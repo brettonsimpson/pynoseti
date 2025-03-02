@@ -48,8 +48,6 @@ def analyzer_function(path):
                     file_data = np.load(str(path)+'/'+str(file_name), allow_pickle=True)
 
                     source_index = []
-
-                    
                     
                     for sequence in file_data:
 
@@ -63,8 +61,6 @@ def analyzer_function(path):
 
                             try:
 
-                                #print(frame.timestamp)
-
                                 threshold_image = np.clip(frame.data, a_min=0, a_max=None) > count_threshold
 
                                 labeled_array, feature_number = ndimage.label(threshold_image)
@@ -76,14 +72,7 @@ def analyzer_function(path):
                                     candidate_source_index.append(Source_Candidate(centroid,
                                                                                    frame.timestamp,
                                                                                    motion_history=None))
-
-
-
-
-
                                 for centroid in centroids:
-
-                                    #if frame_iterate < len(sequence.sequence) - 25:
 
                                     try:
 
@@ -99,20 +88,7 @@ def analyzer_function(path):
                                                 
                                                 if frame.timestamp - source.last_detection_time_s < difference_threshold:
 
-                                                    #print(f'{frame.timestamp-source.last_detection_time_s} is < {difference_threshold}')
-                                                    #print(f'Source first detection time is {source.first_detection_time_s}')
-                                                    #print(f'Source last detection time is {source.last_detection_time_s}')
-                                                    #print(f'Current timestamp is {frame.timestamp}')
-                                                    #print(f'Interval: {test}', '\n')
-                                                    #test+=1
-
-
-
                                                     source.coordinate_update(new_centroid, frame.timestamp)
-
-                                                    #print(new_centroid)
-                                                    #print(frame.timestamp)
-                                                    #print('\n')
 
                                                     source_match = True
 
@@ -132,7 +108,6 @@ def analyzer_function(path):
                             except IndexError as e:
                                 pass
 
-                                
                             frame_iterate+=1
 
 
@@ -194,29 +169,29 @@ def analyzer_function(path):
             y.append(position[0][1])
             #print(f'y is {position[0][1]}\n')
 
-    x = np.array(x)
-    y = np.array(y)
+        x = np.array(x)
+        y = np.array(y)
 
-    coefficients = np.polyfit(x, y, 1)
-    slope, intercept = coefficients
-    y_fit = slope * x + intercept
-    
+        coefficients = np.polyfit(x, y, 1)
+        slope, intercept = coefficients
+        y_fit = slope * x + intercept
         
-    plt.plot(empty_frame)
-    plt.plot(x,y_fit, color='red', label='Motion Fit Line')
-    plt.scatter(x,y, c='blue', label='Coordinate History')
-    plt.gca().invert_yaxis()
-    plt.title('Test Source Coordinate History')
-    plt.xticks([])
-    plt.yticks([])
-    plt.legend()
-    plt.show()
-    
-       
+            
+        plt.plot(empty_frame)
+        plt.plot(x,y_fit, color='red', label='Motion Fit Line')
+        plt.scatter(x,y, c='blue', label='Coordinate History')
+        plt.gca().invert_yaxis()
+        plt.title('Test Source Coordinate History')
+        plt.xticks([])
+        plt.yticks([])
+        plt.legend()
+        plt.show()
+        
+        
     output_file = pd.DataFrame(events)
     output_file.to_csv(path+'/events.csv', index=False)
     print(f'\nEvent log written to {path}/events.csv\n')
 
-    measure_proper_motion(source_index[0], pixel_scale)
+        #measure_proper_motion(source_index[0], pixel_scale)
 
     
