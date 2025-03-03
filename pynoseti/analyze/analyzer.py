@@ -152,13 +152,10 @@ def analyzer_function(path):
 
     empty_frame = np.zeros((32,32))
 
-    x=[]
-    y=[]
-
     for source in source_index:
         #print(len(source.motion_history))
-        #x=[]
-        #y=[]
+        x=[]
+        y=[]
 
         for position in source.motion_history:
             
