@@ -14,6 +14,7 @@ from pynoseti.process.read_json_file import read_json_file
 from pynoseti.analyze.analyzer import analyzer_function
 from pynoseti.process.process_directory import process_directory
 from pynoseti.interface.downloader import downloader
+from pynoseti.analyze.frame_viewer import frame_viewer
 
 with open('config.json', 'r') as file:
     config = json.load(file)
@@ -41,16 +42,16 @@ print(f'''
   #+#           #+#   #+#   #+#+# #+#    #+# #+#    #+# #+#            #+#         #+#          
  ###           ###   ###    ####  ########   ########  ##########     ###     ###########       
 
-(1) Playback                           (3) Preprocess                       (5) Telescopes
+(1) <Playback>                         (3) <Preprocess>                     (5) <Telescopes>
     Renders an .mp4 file that compiles     Generate a file containing           List recognized
     the continuous playback data for       preprocessed observational data      telescopes and quabo
     each telescope. (This can take a       for all files within a directory.    addresses.
     while)                           
 
-(2) Analyzer                           (4) Download
-    Produces a .csv file cataloguing       Retrieve observing data from an
-    transient centroids recognized in      HTML page.
-    processed data.
+(2) <Analyzer>                         (4) <Download>                       (6) <Frame Viewer>
+    Produces a .csv file cataloguing       Retrieve observing data from an      Inspect and analyze
+    transient centroids recognized in      HTML page.                           individual frames.
+    processed data.                                                             
 ''')
 
 option = int(input('Enter the integer corresponding to the action you would like to do: '))
@@ -186,13 +187,16 @@ elif option == 6:
     path.replace('\'', '')
     file = np.load(path, allow_pickle=True)
 
-    for sequence in file:
+    telescope_choice = input('\nSelect a telescope to inspect frames for: ')
 
-        max_count = 0
+    time_choice = input('\nEnter a frame timestamp in nanoseconds to select an image: ')
 
-        for frame in sequence.sequence:
 
-            print(frame.data.flatten())
+
+
+    frame_viewer(file, int(telescope_choice), time_choice)
+
+
 
 
 

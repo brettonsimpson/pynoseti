@@ -48,14 +48,12 @@ def analyzer_function(path):
                     file_data = np.load(str(path)+'/'+str(file_name), allow_pickle=True)
 
                     source_index = []
-                    
+
                     for sequence in file_data:
 
                         frame_iterate = 0
 
                         candidate_source_index = []
-
-                        test = 1
                         
                         for frame in sequence.sequence:
 
@@ -114,7 +112,7 @@ def analyzer_function(path):
 
     print(f'\nSource index length is {len(source_index)}.\n')
 
-    exit()
+    #exit()
     
     #print(len(source_index[0].motion_history))
 
