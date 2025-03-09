@@ -24,27 +24,13 @@ def analyzer_function(file_data):
         'File Path': []
     }
 
-    print('\nIdentifying centroids...')
-
-    
-    
     file_data = np.load(file_data, allow_pickle=True)
 
     scan_interval = 25
 
-    #with os.scandir(path) as files:
-
-    #for file in tqdm(list(files)):
-        #if file.is_file():
-            #if os.path.splitext(path+os.path.basename(file.name))[1] == '.npy':
-                #file_name = os.path.basename(file.name)
-                #file_data = np.load(str(path)+'/'+str(file_name), allow_pickle=True)
-
     source_index = []
 
-    count_threshold = 1500
-
-    pixel_scale = 0.31
+    count_threshold = 2000
 
     for sequence in file_data:
 

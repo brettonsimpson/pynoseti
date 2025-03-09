@@ -172,18 +172,13 @@ elif option == 2:
             file_list = []
 
             for file in files:
-                file_list.append(f'{directory}/{os.path.basename(file.name)}')
+                if file.is_file():
+                    if os.path.splitext(directory+os.path.basename(file.name))[1] == '.npy':
+                        file_list.append(f'{directory}/{os.path.basename(file.name)}')
                     
-            source_index = parallel_processing(file_list, analyzer_function, os.cpu_count())
-            #analyzer_function(file)
+            source_index = parallel_processing(file_list, analyzer_function, 10)
             
             print(f'\nSource index length is {len(source_index)}.\n')
-        
-            #output_file = pd.DataFrame(events)
-            #output_file.to_csv(path+'/events.csv', index=False)
-            #print(f'\nEvent log written to {path}/events.csv\n')
-
-            #measure_proper_motion(source_index[0], pixel_scale)
 
             observing_start = 1000000000
             observing_end = 100000000

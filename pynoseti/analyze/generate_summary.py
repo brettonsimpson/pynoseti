@@ -33,43 +33,48 @@ def generate_summary(source_index, path, observing_start, observing_end, telesco
 
     for source in source_index:
 
-        empty_frame = np.zeros((32,32))
-        x=[]
-        y=[]
+        try:
 
-        for position in source.motion_history:
-            x.append(position[0][0])
-            y.append(position[0][1])
+            empty_frame = np.zeros((32,32))
+            x=[]
+            y=[]
 
-        x = np.array(x)
-        y = np.array(y)
-        coefficients = np.polyfit(x, y, 1)
-        slope, intercept = coefficients
-        y_fit = slope * x + intercept
+            for position in source.motion_history:
+                x.append(position[0][0])
+                y.append(position[0][1])
+
+            x = np.array(x)
+            y = np.array(y)
+            coefficients = np.polyfit(x, y, 1)
+            slope, intercept = coefficients
+            y_fit = slope * x + intercept
+                
+            plt.plot(empty_frame)
+            plt.plot(x,y_fit, color='red', label='Motion Fit Line')
+            plt.scatter(x,y, c='blue', label='Coordinate History')
+            plt.gca().invert_yaxis()
+            plt.title('Test Source Coordinate History')
+            plt.xticks([])
+            plt.yticks([])
+            plt.legend()
             
-        plt.plot(empty_frame)
-        plt.plot(x,y_fit, color='red', label='Motion Fit Line')
-        plt.scatter(x,y, c='blue', label='Coordinate History')
-        plt.gca().invert_yaxis()
-        plt.title('Test Source Coordinate History')
-        plt.xticks([])
-        plt.yticks([])
-        plt.legend()
-        
-        buffer = io.BytesIO()
-        plt.savefig(buffer, format='png')
-        buffer.seek(0)
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
 
-        encoded = base64.b64encode(buffer.getvalue()).decode("utf-8")
-        buffer.close()
-    
-        summary += f"""       <p>{source.identifier}</p>
-                <p>Time of first detection is {convert_unix_time(int(source.first_detection_time_s))}</p>
-                <p>Time of last detection is {convert_unix_time(int(source.last_detection_time_s))}</p>
-                <img src="data:image/png;base64,{encoded}">"""
+            encoded = base64.b64encode(buffer.getvalue()).decode("utf-8")
+            buffer.close()
         
-        plt.close('all')
-        del encoded
+            summary += f"""       <p>{source.identifier}</p>
+                    <p>Time of first detection is {convert_unix_time(int(source.first_detection_time_s))}</p>
+                    <p>Time of last detection is {convert_unix_time(int(source.last_detection_time_s))}</p>
+                    <img src="data:image/png;base64,{encoded}">"""
+            
+            plt.close('all')
+            del encoded
+
+        except AttributeError as e:
+            print('Encountered an AttributeError. Skipping and continuing to next source.')
 
     summary += """  </u1>
     </body>
