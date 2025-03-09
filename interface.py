@@ -3,6 +3,7 @@ import json
 import numpy as np
 import six
 import warnings
+import pandas as pd
 
 warnings.filterwarnings("ignore")
 
@@ -15,6 +16,9 @@ from pynoseti.analyze.analyzer import analyzer_function
 from pynoseti.process.process_directory import process_directory
 from pynoseti.interface.downloader import downloader
 from pynoseti.analyze.frame_viewer import frame_viewer
+from pynoseti.process.parallel_processing import parallel_processing
+from pynoseti.analyze.generate_summary import generate_summary
+from pynoseti.extract.convert_unix_time import convert_unix_time
 
 with open('config.json', 'r') as file:
     config = json.load(file)
@@ -138,7 +142,56 @@ elif option == 2:
     print(f'You selected: {directory}')
 
     if os.path.isdir(directory):
-        analyzer_function(directory)
+        
+
+        with os.scandir(directory) as files:
+            file_count = 0
+            for file in files:
+                if file.is_file():
+                    if os.path.splitext(directory+os.path.basename(file.name))[1] == '.npy':
+                        file_count += 1
+
+        with open('config.json', 'r') as file:
+            config = json.load(file)
+            count_threshold = config["count_threshold"]
+            pixel_scale = config["detector_plane_pixel_scale"]
+
+        with os.scandir(directory) as files:
+
+            #first_file = np.load(directory+'/'+os.path.basename(files[0].name), allow_pickle=True)
+            #last_file = np.load(directory+'/'+os.path.basename(files[len(files)-1].name), allow_pickle=True)
+
+            
+
+            #observing_start = convert_unix_time(int(first_file.sequence[0].timestamp),
+            #                                    milliseconds=False)
+    
+            #observing_end = convert_unix_time(int(last_file.sequence[len(files[0].sequence)-1].timestamp),
+            #                                  milliseconds=False)
+            
+            file_list = []
+
+            for file in files:
+                file_list.append(f'{directory}/{os.path.basename(file.name)}')
+                    
+            source_index = parallel_processing(file_list, analyzer_function, os.cpu_count())
+            #analyzer_function(file)
+            
+            print(f'\nSource index length is {len(source_index)}.\n')
+        
+            #output_file = pd.DataFrame(events)
+            #output_file.to_csv(path+'/events.csv', index=False)
+            #print(f'\nEvent log written to {path}/events.csv\n')
+
+            #measure_proper_motion(source_index[0], pixel_scale)
+
+            observing_start = 1000000000
+            observing_end = 100000000
+
+            generate_summary(source_index, directory, observing_start, observing_end, None)
+            print('Summary file generated!')
+
+
     else:
         exit()
         print('\nPreprocessed file directory not recognized. Generating file directory...')
@@ -195,6 +248,7 @@ elif option == 6:
 
 
     frame_viewer(file, int(telescope_choice), time_choice)
+
 
 
 
