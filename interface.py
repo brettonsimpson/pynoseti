@@ -157,11 +157,9 @@ elif option == 2:
                         file_list.append(f'{directory}/{os.path.basename(file.name)}')
                         file_count += 1
 
-            observing_start = convert_unix_time(int(file_list[0].sequence[0].timestamp),
-                                                milliseconds=False)
+            observing_start = 100 #test value
     
-            observing_end = convert_unix_time(int(file_list[len(file_list)-1].sequence[len(file_list[len(file_list)-1].sequence)-1].timestamp),
-                                              milliseconds=False)
+            observing_end = 100 #test value
 
         with open('config.json', 'r') as file:
             config = json.load(file)
