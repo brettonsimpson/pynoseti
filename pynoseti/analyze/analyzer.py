@@ -28,7 +28,7 @@ def analyzer_function(file_data):
 
     scan_interval = 25
 
-    source_index = []
+    found_sources = []
 
     count_threshold = 2000
 
@@ -63,7 +63,7 @@ def analyzer_function(file_data):
 
                             source_match = False
 
-                            for source in source_index:
+                            for source in found_sources:
                                 
                                 difference_threshold = 1
                                 
@@ -76,7 +76,7 @@ def analyzer_function(file_data):
 
                             if source_match is False:
 
-                                source_index.append(Source(identifier = None,
+                                found_sources.append(Source(identifier = None,
                                                         first_detection_time_s = frame.timestamp,
                                                         last_detection_time_s = frame.timestamp,
                                                         motion_history = [new_centroid],
@@ -90,3 +90,5 @@ def analyzer_function(file_data):
                 pass
 
             frame_iterate+=1
+
+    return found_sources

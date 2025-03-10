@@ -82,5 +82,3 @@ def generate_summary(source_index, path, observing_start, observing_end, telesco
 
     with open(f"{path}/summary/summary.html", "w", encoding="utf-8") as file:
         file.write(summary)
-
-    print("HTML file generated successfully!")

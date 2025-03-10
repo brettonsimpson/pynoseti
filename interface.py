@@ -7,17 +7,21 @@ import pandas as pd
 
 warnings.filterwarnings("ignore")
 
-from pynoseti.playback.playback import *
-from pynoseti.process.aggregate_batch_data import aggregate_batch_data
+from pynoseti.interface.downloader import downloader
 from pynoseti.interface.select_file_directory import select_file_directory
+
+from pynoseti.playback.playback import *
+
+from pynoseti.process.aggregate_batch_data import aggregate_batch_data
 from pynoseti.process.assemble_batch_array import assemble_batch_array
 from pynoseti.process.read_json_file import read_json_file
-from pynoseti.analyze.analyzer import analyzer_function
 from pynoseti.process.process_directory import process_directory
-from pynoseti.interface.downloader import downloader
-from pynoseti.analyze.frame_viewer import frame_viewer
 from pynoseti.process.parallel_processing import parallel_processing
+
+from pynoseti.analyze.analyzer import analyzer_function
+from pynoseti.analyze.frame_viewer import frame_viewer
 from pynoseti.analyze.generate_summary import generate_summary
+
 from pynoseti.extract.convert_unix_time import convert_unix_time
 
 with open('config.json', 'r') as file:
@@ -137,19 +141,28 @@ elif option == 2:
     print('\nPlease provide the directory of the files you would like to generate an event log for: ')
     
     directory = select_file_directory()
-    #directory = '/Users/brettonsimpson/Data/PANOSETI/sample_airplane_TEST/pynoseti'
 
     print(f'You selected: {directory}')
 
+    source_index = [] 
+
     if os.path.isdir(directory):
-        
+
+        file_list = []
 
         with os.scandir(directory) as files:
             file_count = 0
             for file in files:
                 if file.is_file():
                     if os.path.splitext(directory+os.path.basename(file.name))[1] == '.npy':
+                        file_list.append(f'{directory}/{os.path.basename(file.name)}')
                         file_count += 1
+
+            observing_start = convert_unix_time(int(file_list[0].sequence[0].timestamp),
+                                                milliseconds=False)
+    
+            observing_end = convert_unix_time(int(file_list[len(file_list)-1].sequence[len(file_list[len(file_list)-1].sequence)-1].timestamp),
+                                              milliseconds=False)
 
         with open('config.json', 'r') as file:
             config = json.load(file)
@@ -157,41 +170,15 @@ elif option == 2:
             pixel_scale = config["detector_plane_pixel_scale"]
 
         with os.scandir(directory) as files:
-
-            #first_file = np.load(directory+'/'+os.path.basename(files[0].name), allow_pickle=True)
-            #last_file = np.load(directory+'/'+os.path.basename(files[len(files)-1].name), allow_pickle=True)
-
-            
-
-            #observing_start = convert_unix_time(int(first_file.sequence[0].timestamp),
-            #                                    milliseconds=False)
-    
-            #observing_end = convert_unix_time(int(last_file.sequence[len(files[0].sequence)-1].timestamp),
-            #                                  milliseconds=False)
-            
-            file_list = []
-
-            for file in files:
-                if file.is_file():
-                    if os.path.splitext(directory+os.path.basename(file.name))[1] == '.npy':
-                        file_list.append(f'{directory}/{os.path.basename(file.name)}')
                     
-            source_index = parallel_processing(file_list, analyzer_function, 10)
+            source_list_test = parallel_processing(file_list, analyzer_function, 10)
             
             print(f'\nSource index length is {len(source_index)}.\n')
 
-            observing_start = 1000000000
-            observing_end = 100000000
+            print(source_index)
 
             generate_summary(source_index, directory, observing_start, observing_end, None)
             print('Summary file generated!')
-
-
-    else:
-        exit()
-        print('\nPreprocessed file directory not recognized. Generating file directory...')
-        reader_function(directory)
-        analyzer_function(directory)
 
 elif option == 3:
 
