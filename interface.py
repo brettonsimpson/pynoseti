@@ -168,17 +168,21 @@ elif option == 2:
             config = json.load(file)
             count_threshold = config["count_threshold"]
             pixel_scale = config["detector_plane_pixel_scale"]
-
-        with os.scandir(directory) as files:
                     
-            source_list_test = parallel_processing(file_list, analyzer_function, 10)
-            
-            print(f'\nSource index length is {len(source_index)}.\n')
+        source_list_test = parallel_processing(file_list, analyzer_function, 10)
+        
+        print(f'\nSource index length is {len(source_index)}.\n')
+        print(f'\nSource list test length is {len(source_list_test)}.\n')
 
-            print(source_index)
+        print(source_index)
 
-            generate_summary(source_index, directory, observing_start, observing_end, None)
-            print('Summary file generated!')
+        print(source_list_test)
+
+        for element in source_list_test:
+            print(len(element))
+
+        generate_summary(source_index, directory, observing_start, observing_end, None)
+        print('Summary file generated!')
 
 elif option == 3:
 
