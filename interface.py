@@ -4,6 +4,7 @@ import numpy as np
 import six
 import warnings
 import pandas as pd
+from itertools import chain
 
 warnings.filterwarnings("ignore")
 
@@ -144,8 +145,6 @@ elif option == 2:
 
     print(f'You selected: {directory}')
 
-    source_index = [] 
-
     if os.path.isdir(directory):
 
         file_list = []
@@ -171,15 +170,11 @@ elif option == 2:
                     
         source_list_test = parallel_processing(file_list, analyzer_function, 10)
         
-        print(f'\nSource index length is {len(source_index)}.\n')
         print(f'\nSource list test length is {len(source_list_test)}.\n')
 
-        print(source_index)
+        source_index = list(chain(*source_list_test))
 
-        print(source_list_test)
-
-        for element in source_list_test:
-            print(len(element))
+        print(f'\nSource index length is {len(source_index)}.\n')
 
         generate_summary(source_index, directory, observing_start, observing_end, None)
         print('Summary file generated!')
