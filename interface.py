@@ -6,6 +6,10 @@ import warnings
 import pandas as pd
 from itertools import chain
 
+from tqdm import tqdm
+
+import ray
+
 warnings.filterwarnings("ignore")
 
 from pynoseti.interface.downloader import downloader
@@ -165,12 +169,23 @@ elif option == 2:
             config = json.load(file)
             count_threshold = config["count_threshold"]
             pixel_scale = config["detector_plane_pixel_scale"]
-                    
-        source_list_test = parallel_processing(file_list, analyzer_function, 10)
-        
-        print(f'\nSource list test length is {len(source_list_test)}.\n')
 
-        source_index = list(chain(*source_list_test))
+        ray.init(num_cpus=int(3*os.cpu_count()/4))
+
+        source_list_test = [analyzer_function.remote(file) for file in file_list]
+
+        with tqdm(total=len(file_list)) as progress:
+            source_list_test2 = []
+            while source_list_test:
+                complete, source_list_test = ray.wait(source_list_test, num_returns=1)
+                source_list_test2.append(ray.get(complete[0]))
+                progress.update(1)
+        
+        ray.shutdown()
+
+        print(f'\nSource list test length is {len(source_list_test2)}.\n')
+
+        source_index = list(chain(*source_list_test2))
 
         print(f'\nSource index length is {len(source_index)}.\n')
 

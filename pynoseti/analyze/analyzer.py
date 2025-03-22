@@ -6,6 +6,8 @@ from tqdm import tqdm
 from scipy import ndimage
 import matplotlib.pyplot as plt
 
+import ray
+
 from pynoseti.analyze.scan_bounding_box import scan_bounding_box
 from pynoseti.analyze.measure_proper_motion import measure_proper_motion
 from pynoseti.analyze.generate_summary import generate_summary
@@ -14,6 +16,7 @@ from pynoseti.extract.extract_packet_data import convert_unix_time
 
 from pynoseti.process.classes import Source, Source_Candidate
 
+@ray.remote
 def analyzer_function(file_data):
     events = {
         'Pixel Locations': [],
