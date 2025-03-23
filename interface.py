@@ -170,7 +170,7 @@ elif option == 2:
             count_threshold = config["count_threshold"]
             pixel_scale = config["detector_plane_pixel_scale"]
 
-        ray.init(num_cpus=int(3*os.cpu_count()/4))
+        ray.init(num_cpus=int(1*os.cpu_count()/4))
 
         source_list_test = [analyzer_function.remote(file) for file in file_list]
 

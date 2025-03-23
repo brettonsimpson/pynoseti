@@ -7,6 +7,7 @@ from scipy import ndimage
 import matplotlib.pyplot as plt
 
 import ray
+import gc
 
 from pynoseti.analyze.scan_bounding_box import scan_bounding_box
 from pynoseti.analyze.measure_proper_motion import measure_proper_motion
@@ -93,5 +94,9 @@ def analyzer_function(file_data):
                 pass
 
             frame_iterate+=1
+    
+    del file_data
+
+    gc.collect()
 
     return found_sources
