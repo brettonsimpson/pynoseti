@@ -17,7 +17,7 @@ from pynoseti.extract.extract_packet_data import convert_unix_time
 
 from pynoseti.process.classes import Source, Source_Candidate
 
-@ray.remote()
+@ray.remote
 def analyzer_function(file_data):
     events = {
         'Pixel Locations': [],
