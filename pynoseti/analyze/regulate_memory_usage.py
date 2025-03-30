@@ -14,5 +14,5 @@ def get_memory_usage():
     process = psutil.Process()
 
     usage = process.memory_info().rss
-    
-    return usage
+
+    return usage/10e9

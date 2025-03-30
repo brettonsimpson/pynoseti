@@ -45,56 +45,62 @@ def analyzer_function(file_data):
         
         for frame in sequence.sequence:
 
-            try:
+            if frame_iterate % scan_interval == 0:
 
-                threshold_image = np.clip(frame.data, a_min=0, a_max=None) > count_threshold
+                try:
 
-                labeled_array, feature_number = ndimage.label(threshold_image)
+                    threshold_image = np.clip(frame.data, a_min=0, a_max=None) > count_threshold
 
-                centroids = ndimage.center_of_mass(threshold_image, labeled_array, range(1, feature_number+1))
+                    labeled_array, feature_number = ndimage.label(threshold_image)
 
-                for centroid in centroids:
+                    centroids = ndimage.center_of_mass(threshold_image, labeled_array, range(1, feature_number+1))
 
-                    candidate_source_index.append(Source_Candidate(centroid,
-                                                                    frame.timestamp,
-                                                                    motion_history=None))
-                for centroid in centroids:
+                    for centroid in centroids:
 
-                    try:
+                        candidate_source_index.append(Source_Candidate(centroid,
+                                                                        frame.timestamp,
+                                                                        motion_history=None))
+                    for centroid in centroids:
 
-                        new_centroid = scan_bounding_box(centroid, sequence.sequence[frame_iterate+scan_interval].data)
+                        try:
 
-                        if new_centroid is not None:
+                            new_centroid = scan_bounding_box(centroid, sequence.sequence[frame_iterate+scan_interval].data)
 
-                            source_match = False
+                            if new_centroid is not None:
 
-                            for source in found_sources:
+                                source_match = False
+
+                                for source in found_sources:
+                                    
+                                    difference_threshold = 1
+                                    
+                                    if frame.timestamp - source.last_detection_time_s < difference_threshold:
+
+                                        source.coordinate_update(new_centroid, frame.timestamp)
+
+                                        source_match = True
+
+
+                                if source_match is False:
+
+                                    found_sources.append(Source(identifier = None,
+                                                            first_detection_time_s = frame.timestamp,
+                                                            last_detection_time_s = frame.timestamp,
+                                                            motion_history = [new_centroid],
+                                                            average_proper_motion = None,
+                                                            proper_motion_direction = None))
+                                    
+                        except IndexError as e:
+                            pass
                                 
-                                difference_threshold = 1
-                                
-                                if frame.timestamp - source.last_detection_time_s < difference_threshold:
+                except IndexError as e:
+                    pass
 
-                                    source.coordinate_update(new_centroid, frame.timestamp)
+                frame_iterate+=1
 
-                                    source_match = True
+                del frame
 
-
-                            if source_match is False:
-
-                                found_sources.append(Source(identifier = None,
-                                                        first_detection_time_s = frame.timestamp,
-                                                        last_detection_time_s = frame.timestamp,
-                                                        motion_history = [new_centroid],
-                                                        average_proper_motion = None,
-                                                        proper_motion_direction = None))
-                                
-                    except IndexError as e:
-                        pass
-                            
-            except IndexError as e:
-                pass
-
-            frame_iterate+=1
+        del sequence
     
     del file_data
 
