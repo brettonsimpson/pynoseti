@@ -2,7 +2,7 @@ from datetime import datetime
 
 def convert_unix_time(time, milliseconds=True):
 
-    date_object = datetime.fromtimestamp(time)
+    date_object = datetime.fromtimestamp(time/10e2)
 
     if milliseconds is True:
 
