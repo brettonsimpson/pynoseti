@@ -236,11 +236,5 @@ elif option == 6:
 
     packet_diagnostic_tool(file_path)
 
-
-
-
-
-
-
 #end_time = time.time()
 #print('Reduction completed in '+str(end_time-start_time)+' seconds!')
