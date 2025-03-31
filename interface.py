@@ -14,6 +14,7 @@ warnings.filterwarnings("ignore")
 
 from pynoseti.interface.downloader import downloader
 from pynoseti.interface.select_file_directory import select_file_directory
+from pynoseti.interface.select_file_path import select_file_path
 
 from pynoseti.playback.playback import *
 
@@ -230,7 +231,7 @@ elif option == 5:
 
 elif option == 6:
 
-    file_path = select_file_directory()
+    file_path = select_file_path()
     print(f'You selected: {file_path}')
 
     packet_diagnostic_tool(file_path)
