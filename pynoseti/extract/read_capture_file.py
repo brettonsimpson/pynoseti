@@ -11,7 +11,7 @@ def read_capture_file(file):
 
         for packet in capture:
 
-            concatenated_batch_data.append(packet)
+            concatenated_batch_data.append([packet, packet.time])
 
         del capture
 

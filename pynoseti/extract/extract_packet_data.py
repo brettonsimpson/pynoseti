@@ -169,7 +169,7 @@ def get_image_source_ip(packet):
 def assemble_packet_data(packet):
     
     processed_packet = Packet(get_image_source_ip(bytes(packet).hex()),
-                              packet.time,
+                              packet[1],
                               row_splitter(bytes(packet).hex()),
                               len(separated_hex_values(bytes(packet).hex())))
 
