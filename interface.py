@@ -28,6 +28,7 @@ from pynoseti.analyze.frame_viewer import frame_viewer
 from pynoseti.analyze.generate_summary import generate_summary
 
 from pynoseti.extract.convert_unix_time import convert_unix_time
+from pynoseti.extract.packet_diagnostic_tool import packet_diagnostic_tool
 
 with open('config.json', 'r') as file:
     config = json.load(file)
@@ -61,9 +62,9 @@ print(f'''
     each telescope. (This can take a       for all files within a directory.    addresses.
     while)                           
 
-(2) <Analyzer>                         (4) <Download>                       (6) <Frame Viewer>
-    Produces a .csv file cataloguing       Retrieve observing data from an      Inspect and analyze
-    transient centroids recognized in      HTML page.                           individual frames.
+(2) <Analyzer>                         (4) <Download>                       (6) <Diagnostic Tool>
+    Produces a .csv file cataloguing       Retrieve observing data from an      Inspect individual
+    transient centroids recognized in      HTML page.                           .pcapng files.
     processed data.                                                             
 ''')
 
@@ -229,19 +230,7 @@ elif option == 5:
 
 elif option == 6:
 
-    path = input('Enter a path: ')
-    #path = '/Users/brettonsimpson/Data/PANOSETI/ima_dataset2/pynoseti/Ima_onsky_batch_1_preprocessed_data_cube.npy'
-    path.replace('\'', '')
-    file = np.load(path, allow_pickle=True)
-
-    telescope_choice = input('\nSelect a telescope to inspect frames for: ')
-
-    time_choice = input('\nEnter a frame timestamp in nanoseconds to select an image: ')
-
-
-
-
-    frame_viewer(file, int(telescope_choice), time_choice)
+    packet_diagnostic_tool()
 
 
 
