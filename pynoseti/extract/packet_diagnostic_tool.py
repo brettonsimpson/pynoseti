@@ -2,10 +2,10 @@ from scapy.all import rdpcap
 
 from pynoseti.extract.extract_packet_data import *
 
-def packet_diagnostic_tool():
-    packet_path = input("Enter the path for the packet file: ")
-    packet_number = int(input("Enter the packet number: "))
-    packet = rdpcap(packet_path)
+def packet_diagnostic_tool(file_path):
+    
+    packet_number = int(input("\nEnter the packet number: "))
+    packet = rdpcap(file_path)
     print(packet)
     print(packet[packet_number].show())
     print(packet[packet_number].summary())

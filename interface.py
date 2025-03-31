@@ -230,7 +230,10 @@ elif option == 5:
 
 elif option == 6:
 
-    packet_diagnostic_tool()
+    file_path = select_file_directory()
+    print(f'You selected: {file_path}')
+
+    packet_diagnostic_tool(file_path)
 
 
 
