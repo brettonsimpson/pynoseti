@@ -109,6 +109,4 @@ def analyzer_function(file_data):
 
     gc.collect()
 
-    print(get_memory_usage())
-
     return found_sources
