@@ -1,6 +1,10 @@
 from moviepy.editor import VideoFileClip, concatenate_videoclips
 
-def merege_playback_files(file_list):
+def merege_playback_files(directory):
+
+    for file in directory.glob('*.mp4'):
+        file_list = []
+        file_list.append(file)
 
     clips = [VideoFileClip(file) for file in file_list]
     

@@ -17,6 +17,7 @@ from pynoseti.interface.select_file_directory import select_file_directory
 from pynoseti.interface.select_file_path import select_file_path
 
 from pynoseti.playback.playback import *
+from pynoseti.playback.merge_playback_files import merge_playback_files
 
 from pynoseti.process.aggregate_batch_data import aggregate_batch_data
 from pynoseti.process.assemble_batch_array import assemble_batch_array
@@ -67,6 +68,11 @@ print(f'''
     Produces a .csv file cataloguing       Retrieve observing data from an      Inspect individual
     transient centroids recognized in      HTML page.                           .pcapng files.
     processed data.                                                             
+
+(7) <Merge Playback Files>
+    Merge multiple playback files into
+    a single file.
+
 ''')
 
 option = int(input('Enter the integer corresponding to the action you would like to do: '))
@@ -235,6 +241,18 @@ elif option == 6:
     print(f'You selected: {file_path}')
 
     packet_diagnostic_tool(file_path)
+
+elif option ==7:
+    print('\nPlease provide the directory of the files you would like to merge.')
+
+    directory = select_file_directory()
+
+    print(f'You selected: {directory}')
+
+    merge_playback_files(directory)
+
+    print('Merge Playback Files Complete!\n')
+
 
 #end_time = time.time()
 #print('Reduction completed in '+str(end_time-start_time)+' seconds!')
