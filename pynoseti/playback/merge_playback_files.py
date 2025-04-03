@@ -1,6 +1,7 @@
 #from moviepy.editor import VideoFileClip, concatenate_videoclips
 
 import ffmpeg
+import os
 
 '''
 def merge_playback_files(directory):
@@ -20,8 +21,13 @@ def merge_playback_files(directory):
 def merge_playback_files(directory):
     
     video_list = []
-    for file in directory.glob('*.mp4'):
-        video_list.append(file)
+    #for file in directory.glob('*.mp4'):
+    #    video_list.append(file)
+
+    with os.scandir(directory) as files:
+        for file in files:
+            if file.name.endswith('.mp4'):
+                video_list.append(file.path)
 
     input_files = [ffmpeg.input(video) for video in video_list]
     joined = ffmpeg.concat(*input_files, v=1, a=1).output('output_file.mp4', codec='libx264', audio_codec='aac')
