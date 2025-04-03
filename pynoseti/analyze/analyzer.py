@@ -80,7 +80,10 @@ def analyzer_function(file_data):
 
                                         source_match = True
 
+                                    if source.first_detection_time_s == source.last_detection_time_s:
 
+                                        source_match = False
+                                
                                 if source_match is False:
 
                                     found_sources.append(Source(identifier = None,
