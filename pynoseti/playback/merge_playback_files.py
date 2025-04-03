@@ -17,7 +17,7 @@ def merge_playback_files(directory):
 '''
 
 
-def concatenate_videos(directory):
+def merge_playback_files(directory):
     
     video_list = []
     for file in directory.glob('*.mp4'):
