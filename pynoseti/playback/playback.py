@@ -51,10 +51,16 @@ def playback_function(file, choice, file_name, save_directory):
                 ax.set_axis_off()
 
                 def animate(i):
-                    im.set_array(array_image_list[telescope_choice].sequence[i].data)
-                    ax.set_title(convert_unix_time(array_image_list[telescope_choice].sequence[i].timestamp), loc='left', y=-0.065)
-                    frame_number.set_text(f'Frame {i+1} of '+str(len(array_image_list[telescope_choice].sequence)+1))
-                    return [im, ax]
+
+                    try:
+
+                        im.set_array(array_image_list[telescope_choice].sequence[i].data)
+                        ax.set_title(convert_unix_time(array_image_list[telescope_choice].sequence[i].timestamp), loc='left', y=-0.065)
+                        frame_number.set_text(f'Frame {i+1} of '+str(len(array_image_list[telescope_choice].sequence)+1))
+                        return [im, ax]
+                    
+                    except IndexError:
+                        pass
                 
                 playback_period = (array_image_list[0].sequence[len(array_image_list[0].sequence)-1].timestamp-array_image_list[0].sequence[0].timestamp)
                 fps = len(array_image_list[0].sequence)/playback_period
@@ -84,12 +90,15 @@ def playback_function(file, choice, file_name, save_directory):
                 ax.set_axis_off()
 
                 def animate(i):
-                    im.set_array(array_image_list[telescope_choice].sequence[i].data)
-                    ax.set_title(convert_unix_time(array_image_list[telescope_choice].sequence[i].timestamp), loc='left', y=-0.065)
-                    frame_number.set_text(f'Frame {i} of '+str(len(array_image_list[telescope_choice].sequence)))
-                    return [im, ax]
-                
-                fps = 20
+                    try:
+
+                        im.set_array(array_image_list[telescope_choice].sequence[i].data)
+                        ax.set_title(convert_unix_time(array_image_list[telescope_choice].sequence[i].timestamp), loc='left', y=-0.065)
+                        frame_number.set_text(f'Frame {i} of '+str(len(array_image_list[telescope_choice].sequence)))
+                        return [im, ax]
+                    
+                    except IndexError:
+                        pass
 
             except IndexError:
                 pass
@@ -133,11 +142,16 @@ def playback_function(file, choice, file_name, save_directory):
                 def animate(frame):
                     for i, im in enumerate(ims):
                         if frame < len(array_image_list[i].sequence):
-                            im.set_array(np.clip(array_image_list[i].sequence[frame].data, a_min=0, a_max=None))
-                            im.axes.set_title('PDT '+convert_unix_time(int(array_image_list[i].sequence[frame].timestamp)), loc='left')
-                            frame_number.set_text(f'Frame {frame+1} of '+str(len(array_image_list[i].sequence)+1))
                             
-                    return [im]
+                            try:
+
+                                im.set_array(np.clip(array_image_list[i].sequence[frame].data, a_min=0, a_max=None))
+                                im.axes.set_title('PDT '+convert_unix_time(int(array_image_list[i].sequence[frame].timestamp)), loc='left')
+                                frame_number.set_text(f'Frame {frame+1} of '+str(len(array_image_list[i].sequence)+1))
+                                return [im]
+
+                            except IndexError:
+                                pass
                 
             except IndexError:
                 pass
@@ -171,10 +185,14 @@ def playback_function(file, choice, file_name, save_directory):
 
                 def animate(frame):
                     for i, im in enumerate(ims):
-                        im.set_array(np.clip(array_image_list[i].sequence[frame].data, a_min=0, a_max=None))
-                        im.axes.set_title('PDT '+convert_unix_time(float(array_image_list[i].sequence[frame].timestamp)), loc='left')
-                        frame_number.set_text(f'Frame {frame+1} of '+str(len(array_image_list[i].sequence)+1))
-                    return [im]
+                        try:
+                            im.set_array(np.clip(array_image_list[i].sequence[frame].data, a_min=0, a_max=None))
+                            im.axes.set_title('PDT '+convert_unix_time(float(array_image_list[i].sequence[frame].timestamp)), loc='left')
+                            frame_number.set_text(f'Frame {frame+1} of '+str(len(array_image_list[i].sequence)+1))
+                            return [im]
+
+                        except IndexError:
+                            pass
                 
             except IndexError:
                 pass
