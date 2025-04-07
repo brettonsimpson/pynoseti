@@ -84,6 +84,8 @@ if option == 1:
     
     save_directory = str(directory)+'/pynoseti'
 
+    data_directory = str(directory)+'/pynoseti/data'
+
     file_count = 0
 
     if os.path.isdir(save_directory):
@@ -112,7 +114,7 @@ if option == 1:
         print('\nPreprocessed file directory recognized. Advancing to video file generation.\n')
 
 
-        with os.scandir(save_directory) as files:
+        with os.scandir(data_directory) as files:
             for file in files:
                 if os.path.splitext(os.path.basename(file.name))[1] == '.npy':
 
