@@ -86,6 +86,8 @@ if option == 1:
 
     data_directory = str(directory)+'/pynoseti/data'
 
+    playback_folder = str(save_directory)+'/playback'
+
     file_count = 0
 
     if os.path.isdir(save_directory) and os.path.isdir(data_directory) is True:
@@ -96,8 +98,6 @@ if option == 1:
                     file_count+=1
 
     if os.path.isdir(str(save_directory)+'/playback') is False:
-        
-        playback_folder = str(save_directory)+'/playback'
         
         os.mkdir(playback_folder)
         
