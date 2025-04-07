@@ -88,8 +88,8 @@ if option == 1:
 
     file_count = 0
 
-    if os.path.isdir(save_directory):
-        with os.scandir(save_directory) as files:
+    if os.path.isdir(save_directory) and os.path.isdir(data_directory) is True:
+        with os.scandir(data_directory) as files:
             
             for file in files:
                 if os.path.splitext(os.path.basename(file.name))[1] == '.npy':
