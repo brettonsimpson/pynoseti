@@ -92,6 +92,13 @@ if option == 1:
             for file in files:
                 if os.path.splitext(os.path.basename(file.name))[1] == '.npy':
                     file_count+=1
+
+    if os.path.isdir(str(save_directory)+'/playback') is False:
+        
+        playback_folder = str(save_directory)+'/playback'
+        
+        os.mkdir(playback_folder)
+        
         
     if file_count != 0:
 
@@ -112,11 +119,11 @@ if option == 1:
                     if telescope_choice is not None:
                         choice = int(telescope_choice)-1
                         
-                        playback_function(np.load(file, allow_pickle=True), telescope_choice, file.name, save_directory)
+                        playback_function(np.load(file, allow_pickle=True), telescope_choice, file.name, playback_folder)
                                     
                     elif telescope_choice is None:
                         
-                        playback_function(np.load(file, allow_pickle=True), None, file.name, save_directory)
+                        playback_function(np.load(file, allow_pickle=True), None, file.name, playback_folder)
 
     else:
         i=1
@@ -143,11 +150,11 @@ if option == 1:
         
         if telescope_choice is not None:
 
-            playback_function(processed_data[0], telescope_choice, processed_data[1], save_directory)
+            playback_function(processed_data[0], telescope_choice, processed_data[1], playback_folder)
 
         elif telescope_choice is None:
 
-            playback_function(processed_data[0], None, processed_data[1], save_directory)
+            playback_function(processed_data[0], None, processed_data[1], playback_folder)
 
 elif option == 2:
 
