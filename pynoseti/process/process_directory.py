@@ -14,10 +14,15 @@ def process_directory(directory, option):
 
     telescope_list, quabo_address_list = read_json_file()
 
-    save_directory = f'{directory}/pynoseti'
+    pynoseti_directory = f'{directory}/pynoseti'
 
-    if os.path.isdir(save_directory) is False:
-        os.mkdir(save_directory)
+    data_directory = f'{directory}/pynoseti/data'
+
+    if os.path.isdir(pynoseti_directory) is False:
+        os.mkdir(pynoseti_directory)
+
+    if os.path.isdir(data_directory) is False:
+        os.mkdir(data_directory)
 
     batch_iterate = 0
 
@@ -40,16 +45,16 @@ def process_directory(directory, option):
 
             if imaging_mode is True:
 
-                np.save(f'{save_directory}/Ima_onsky_batch_{batch_iterate+1}_preprocessed_data_cube',
+                np.save(f'{data_directory}/Ima_onsky_batch_{batch_iterate+1}_preprocessed_data_cube',
                         np.array(aggregated_data, dtype='object'))
                 
-                print(f'Data cube saved to: {save_directory}')
+                print(f'Data cube saved to: {data_directory}')
 
             else:
-                np.save(f'{save_directory}/batch_{batch_iterate+1}_preprocessed_data_cube',
+                np.save(f'{data_directory}/batch_{batch_iterate+1}_preprocessed_data_cube',
                         np.array(aggregated_data, dtype='object'))
                 
-                print(f'Data cube saved to: {save_directory}')
+                print(f'Data cube saved to: {data_directory}')
             
         batch_iterate +=1
 
